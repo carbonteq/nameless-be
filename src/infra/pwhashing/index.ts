@@ -1,6 +1,6 @@
 import { PwHashingService } from "@app/services/pw-hashing.service";
 import { Result, type UnitResult } from "@carbonteq/fp";
-import { InvalidCredentials } from "@domain/entities/auth-user/auth-user.errors";
+import { InvalidCredentials } from "@domain/entities/user/user.errors";
 import config from "@infra/config";
 import type { Provider } from "@nestjs/common";
 import * as nodeArgon2 from "@node-rs/argon2";

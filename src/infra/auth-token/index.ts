@@ -23,7 +23,7 @@ class JwtService extends AuthTokenService {
 	}
 
 	sign(payload: AuthTokenPayload): { token: string } {
-		const token = this.client.sign(payload, { sub: payload.authId });
+		const token = this.client.sign(payload, { sub: payload.userId });
 
 		return { token };
 	}
