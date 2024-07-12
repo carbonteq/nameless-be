@@ -1,0 +1,22 @@
+{
+	"jsc": {
+		"parser": {
+			"syntax": "typescript",
+			"tsx": false,
+			"decorators": true,
+			"dynamicImport": false,
+			"importAssertions": true,
+			"dts": false
+		},
+		"baseUrl": ".",
+		"paths": {
+			"@shared/*": ["./src/shared/*"],
+			"@models/*": ["./src/infra/db/typeorm/models/*"],
+			"@app/*": ["./src/app/*"],
+			"@common/*": ["./src/common/*"],
+			"@domain/*": ["./src/domain/*"],
+			"@infra/*": ["./src/infra/*"],
+			"@web/*": ["./src/web/*"]
+		}
+	}
+}

@@ -1,0 +1,4 @@
+{
+	"{src,test}/**/*.ts": ["biome check --write --use-server"],
+	"*.json": ["biome check --write --use-server"]
+}

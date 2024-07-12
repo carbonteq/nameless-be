@@ -1,0 +1,18 @@
+{
+	"moduleFileExtensions": ["js", "json", "ts"],
+	"rootDir": ".",
+	"testEnvironment": "node",
+	"testRegex": ".e2e-spec.ts$",
+	"transform": {
+		"^.+\\.(t|j)s$": "@swc/jest"
+	},
+	"moduleNameMapper": {
+		"^src(.*)$": "<rootDir>/../src$1",
+		"^@app(.*)$": "<rootDir>/../src/app$1",
+		"^@common(.*)$": "<rootDir>/../src/common$1",
+		"^@web(.*)$": "<rootDir>/../src/web$1",
+		"^@domain(.*)$": "<rootDir>/../src/domain$1",
+		"^@infra(.*)$": "<rootDir>/../src/infra$1",
+		"^@shared(.*)$": "<rootDir>/../src/shared$1"
+	}
+}

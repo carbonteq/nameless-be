@@ -1,0 +1,40 @@
+{
+	"extends": "@tsconfig/node20/tsconfig.json",
+	"compilerOptions": {
+		"declaration": true,
+		"removeComments": true,
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"allowSyntheticDefaultImports": true,
+		"sourceMap": true,
+		"outDir": "./dist",
+		"baseUrl": "./",
+		"incremental": true,
+		"strictNullChecks": true,
+		"strictPropertyInitialization": true,
+		"noImplicitAny": false,
+		"noImplicitThis": true,
+		"strictBindCallApply": true,
+		"forceConsistentCasingInFileNames": true,
+		"noFallthroughCasesInSwitch": true,
+		"resolveJsonModule": true,
+		"paths": {
+			"@shared/*": ["./src/shared/*"],
+			"@models/*": ["./src/infra/db/typeorm/models/*"],
+			"@app/*": ["./src/app/*"],
+			"@common/*": ["./src/common/*"],
+			"@domain/*": ["./src/domain/*"],
+			"@infra/*": ["./src/infra/*"],
+			"@web/*": ["./src/web/*"]
+		}
+	},
+	"exclude": [
+		"node_modules",
+		"dist",
+		".husky",
+		"docker",
+		".github",
+		"tmp*.ts",
+		"scripts"
+	]
+}
