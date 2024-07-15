@@ -1,8 +1,8 @@
 import { Global, Module } from "@nestjs/common";
 import { drizzleDbProvider } from "./drizzle/db-connection";
-import { userRepoProvider } from "./user.in-memory-repo";
+import { UserRepoProvider } from "./drizzle/repos/user.drizzle-repo";
 
-const REPOS = [userRepoProvider];
+const REPOS = [drizzleDbProvider, UserRepoProvider];
 
 @Global()
 @Module({ providers: REPOS, exports: REPOS })

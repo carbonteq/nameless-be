@@ -1,4 +1,4 @@
-import { BaseEntity, Email, type IEntity } from "@carbonteq/hexapp";
+import { BaseEntity, Email, type IEntity, Omitt } from "@carbonteq/hexapp";
 import { SimpleSerialized } from "@shared/types";
 
 export interface IUser extends IEntity {
@@ -8,6 +8,7 @@ export interface IUser extends IEntity {
 }
 
 export type SerializedUser = SimpleSerialized<IUser>;
+type UserUpdateData = Omitt<IUser, "id" | "createdAt" | "username">;
 
 export class User extends BaseEntity implements IUser {
 	#email: IUser["email"];
@@ -30,6 +31,14 @@ export class User extends BaseEntity implements IUser {
 
 	get pwHashed() {
 		return this.#pwHashed;
+	}
+
+	forUpdate(): UserUpdateData {
+		return {
+			...super.forUpdate(),
+			email: this.#email,
+			pwHashed: this.#pwHashed,
+		};
 	}
 
 	static fromSerialized(other: SerializedUser): User {

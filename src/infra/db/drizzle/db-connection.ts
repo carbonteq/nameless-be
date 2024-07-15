@@ -2,12 +2,11 @@ import config from "@infra/config";
 import { NodePgDatabase, drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 
-import { Provider, Scope } from "@nestjs/common";
-// import dbSchema from "./models";
+import { Inject, Provider, Scope, applyDecorators } from "@nestjs/common";
+import dbSchema from "./models";
 
 export const DRIZZLE_DB = Symbol.for("DRIZZLE");
-// export type DrizzleDb = NodePgDatabase<typeof dbSchema>;
-type DrizzleDb = unknown;
+export type DrizzleDb = NodePgDatabase<typeof dbSchema>;
 
 export const drizzleConnFactory = () => {
 	const pool = new Pool({
@@ -16,7 +15,7 @@ export const drizzleConnFactory = () => {
 	});
 
 	const db = drizzle(pool, {
-		// schema: dbSchema,
+		schema: dbSchema,
 		logger: config.app.NODE_ENV === "DEV",
 	});
 
@@ -28,3 +27,5 @@ export const drizzleDbProvider: Provider<DrizzleDb> = {
 	scope: Scope.DEFAULT,
 	useFactory: drizzleConnFactory,
 };
+
+export const InjectDb = () => Inject(DRIZZLE_DB);
