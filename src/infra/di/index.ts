@@ -1,12 +1,17 @@
 import { AuthWorkflows } from "@app/workflows/auth.workflows";
 import { AuthTokenServiceProvider } from "@infra/auth-token";
 import { DbModule } from "@infra/db";
+import { EmailServProvider } from "@infra/email";
 import { PinoAppLoggerModule } from "@infra/logger";
 import { HashingServiceProvider } from "@infra/pwhashing";
 import { Global, Module } from "@nestjs/common";
 
 // Stuff like Redit, Elasticsearch
-const BASE_SERVICES = [HashingServiceProvider, AuthTokenServiceProvider];
+const BASE_SERVICES = [
+	HashingServiceProvider,
+	AuthTokenServiceProvider,
+	EmailServProvider,
+];
 
 @Global()
 @Module({

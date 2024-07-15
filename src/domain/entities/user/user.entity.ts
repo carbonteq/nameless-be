@@ -5,6 +5,7 @@ export interface IUser extends IEntity {
 	username: string;
 	email: Email;
 	pwHashed: string;
+	// TODO: add isVerified
 }
 
 export type SerializedUser = SimpleSerialized<IUser>;

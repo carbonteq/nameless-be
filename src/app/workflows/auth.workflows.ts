@@ -1,5 +1,6 @@
 import type { LoginDto, SignUpDto } from "@app/dtos/auth.dto";
 import { AuthTokenService } from "@app/services/auth-token.service";
+import { EmailService } from "@app/services/email.service";
 import { PwHashingService } from "@app/services/pw-hashing.service";
 import { AppResult } from "@carbonteq/hexapp";
 import { User } from "@domain/entities/user/user.entity";
@@ -12,6 +13,7 @@ export class AuthWorkflows {
 		private readonly pwHashServ: PwHashingService,
 		private readonly tokenServ: AuthTokenService,
 		private readonly userRepo: UserRepository,
+		private readonly emailServ: EmailService,
 	) {}
 
 	async login({ email, password }: LoginDto) {
@@ -31,8 +33,13 @@ export class AuthWorkflows {
 			User.new(username, email, pwHashed),
 		);
 
+		// TODO: send email
+
 		const loginToken = user.map((u) => this.tokenServ.sign({ userId: u.id }));
 
 		return AppResult.fromResult(loginToken);
 	}
+
+	// TODO: complete this
+	async verifyUser() {}
 }

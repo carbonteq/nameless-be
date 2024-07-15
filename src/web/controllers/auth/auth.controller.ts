@@ -1,6 +1,6 @@
 import { LoginDto, SignUpDto } from "@app/dtos/auth.dto";
 import { AuthWorkflows } from "@app/workflows/auth.workflows";
-import { Body, Controller, HttpCode, Post } from "@nestjs/common";
+import { Body, Controller, HttpCode, Post, Put } from "@nestjs/common";
 
 @Controller("/auth")
 export class AuthController {
@@ -19,5 +19,12 @@ export class AuthController {
 		const dto = SignUpDto.create(body).unwrap();
 
 		return await this.wfs.signup(dto);
+	}
+
+	@Put("/verify")
+	async verifyUser(@Body() body: unknown) {
+		// create dto
+
+		return await this.wfs.verifyUser(dto);
 	}
 }
