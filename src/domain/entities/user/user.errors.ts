@@ -12,8 +12,11 @@ export class UserNotFound extends NotFoundError {
 }
 
 export class UserAlreadyExists extends AlreadyExistsError {
-	constructor(data: string, field: "email" | "username") {
-		super(`User with ${field} <${data}> already exists`);
+	constructor(
+		readonly data: string,
+		field: "email" | "username",
+	) {
+		super(`User with this ${field} already exists`);
 	}
 }
 

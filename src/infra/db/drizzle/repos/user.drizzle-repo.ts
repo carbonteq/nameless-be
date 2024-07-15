@@ -11,6 +11,7 @@ import { Injectable, Provider } from "@nestjs/common";
 import { eq } from "drizzle-orm";
 import { DrizzleDb, InjectDb } from "../db-connection";
 import { userTbl } from "../models/user.model";
+import { handleDrizzleErr } from "../utils";
 
 @Injectable()
 class UserDrizzleRepo extends UserRepository {
@@ -29,9 +30,23 @@ class UserDrizzleRepo extends UserRepository {
 	async insert(user: User): Promise<RepositoryResult<User, UserAlreadyExists>> {
 		const data = user.serialize();
 
-		await this.db.insert(userTbl).values(data);
+		try {
+			await this.db.insert(userTbl).values(data);
 
-		return Result.Ok(user);
+			return Result.Ok(user);
+		} catch (err) {
+			return handleDrizzleErr(err, {
+				UniqueConstaintViolation: (e) => {
+					const isUsernameErr = e.message.includes("username");
+
+					const [identifier, field] = isUsernameErr
+						? ([user.username, "username"] as const)
+						: ([user.email, "email"] as const);
+
+					return Result.Err(new UserAlreadyExists(identifier, field));
+				},
+			});
+		}
 	}
 
 	async fetchById(

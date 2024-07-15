@@ -27,6 +27,8 @@ export class ErrorFilter implements ExceptionFilter<Error> {
 		// const req = ctx.getRequest<Request>();
 		const resp = ctx.getResponse<Response>();
 
+		//@ts-ignore
+		this.logger.debug(err.code);
 		this.logger.error(err, err.stack);
 
 		if (err instanceof DtoValidationError) {

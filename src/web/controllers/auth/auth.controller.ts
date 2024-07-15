@@ -1,4 +1,4 @@
-import { LoginDto } from "@app/dtos/login.dto";
+import { LoginDto, SignUpDto } from "@app/dtos/auth.dto";
 import { AuthWorkflows } from "@app/workflows/auth.workflows";
 import { Body, Controller, HttpCode, Post } from "@nestjs/common";
 
@@ -12,5 +12,12 @@ export class AuthController {
 		const dto = LoginDto.create(body).unwrap();
 
 		return await this.wfs.login(dto);
+	}
+
+	@Post("/register")
+	async signUp(@Body() body: unknown) {
+		const dto = SignUpDto.create(body).unwrap();
+
+		return await this.wfs.signup(dto);
 	}
 }

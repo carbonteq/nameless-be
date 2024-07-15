@@ -1,7 +1,8 @@
-import type { LoginDto } from "@app/dtos/login.dto";
+import type { LoginDto, SignUpDto } from "@app/dtos/auth.dto";
 import { AuthTokenService } from "@app/services/auth-token.service";
 import { PwHashingService } from "@app/services/pw-hashing.service";
 import { AppResult } from "@carbonteq/hexapp";
+import { User } from "@domain/entities/user/user.entity";
 import { UserRepository } from "@domain/entities/user/user.repository";
 import { Injectable } from "@nestjs/common";
 
@@ -21,5 +22,17 @@ export class AuthWorkflows {
 			.map((user) => this.tokenServ.sign({ userId: user.id }));
 
 		return AppResult.fromResult(tokenRes);
+	}
+
+	async signup({ email, password, username }: SignUpDto) {
+		const pwHashed = this.pwHashServ.hash(password);
+
+		const user = await this.userRepo.insert(
+			User.new(username, email, pwHashed),
+		);
+
+		const loginToken = user.map((u) => this.tokenServ.sign({ userId: u.id }));
+
+		return AppResult.fromResult(loginToken);
 	}
 }
