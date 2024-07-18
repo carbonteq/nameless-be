@@ -13,6 +13,15 @@ import { DrizzleDb, InjectDb } from "../db-connection";
 import { userTbl } from "../models/user.model";
 import { handleDrizzleErr } from "../utils";
 
+const fromDb = <E>(
+	data: typeof userTbl.$inferSelect | undefined,
+	errFactory: () => E,
+): Result<User, E> => {
+	if (!data) return Result.Err(errFactory());
+
+	return Result.Ok(User.fromSerialized(data));
+};
+
 @Injectable()
 class UserDrizzleRepo extends UserRepository {
 	constructor(@InjectDb() private readonly db: DrizzleDb) {
@@ -36,7 +45,7 @@ class UserDrizzleRepo extends UserRepository {
 			return Result.Ok(user);
 		} catch (err) {
 			return handleDrizzleErr(err, {
-				UniqueConstaintViolation: (e) => {
+				UniqueConstraintViolation: (e) => {
 					const isUsernameErr = e.message.includes("username");
 
 					const [identifier, field] = isUsernameErr
@@ -56,9 +65,7 @@ class UserDrizzleRepo extends UserRepository {
 			where: eq(userTbl.id, id),
 		});
 
-		if (!data) return Result.Err(new InvalidCredentials());
-
-		return Result.Ok(User.fromSerialized(data));
+		return fromDb(data, () => new UserNotFound(id));
 	}
 
 	async fetchByEmail(
@@ -68,9 +75,7 @@ class UserDrizzleRepo extends UserRepository {
 			where: eq(userTbl.email, email),
 		});
 
-		if (!data) return Result.Err(new InvalidCredentials());
-
-		return Result.Ok(User.fromSerialized(data));
+		return fromDb(data, () => new InvalidCredentials());
 	}
 }
 

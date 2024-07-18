@@ -21,4 +21,14 @@ export abstract class EmailService {
 			},
 		});
 	}
+
+	async sendForgotPasswordEmail(email: Email, baseUrl: string, reqId: UUID) {
+		return await this.send({
+			to: email,
+			subject: "Reset your password",
+			templateVars: {
+				resetLink: `${baseUrl}/${reqId}`,
+			},
+		});
+	}
 }

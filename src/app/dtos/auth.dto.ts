@@ -1,15 +1,21 @@
-import { BaseDto, type DtoValidationResult, Email } from "@carbonteq/hexapp";
+import {
+	BaseDto,
+	type DtoValidationResult,
+	Email,
+	UUID,
+} from "@carbonteq/hexapp";
+import { Password, Username } from "@domain/refined/user.refined";
 import z from "zod";
 
 export class LoginDto extends BaseDto {
 	private static readonly schema = z.object({
 		email: Email,
-		password: z.string().min(1),
+		password: Password,
 	});
 
 	private constructor(
 		readonly email: Email,
-		readonly password: string,
+		readonly password: Password,
 	) {
 		super();
 	}
@@ -23,15 +29,15 @@ export class LoginDto extends BaseDto {
 
 export class SignUpDto extends BaseDto {
 	private static readonly schema = z.object({
-		username: z.string().min(5),
+		username: Username,
 		email: Email,
-		password: z.string().min(1),
+		password: Password,
 	});
 
 	private constructor(
-		readonly username: string,
+		readonly username: Username,
 		readonly email: Email,
-		readonly password: string,
+		readonly password: Password,
 	) {
 		super();
 	}
@@ -47,35 +53,39 @@ export class SignUpDto extends BaseDto {
 export class ForgotPasswordDto extends BaseDto {
 	private static readonly schema = z.object({
 		email: Email,
+		baseUrl: z.string().url(),
 	});
 
-	private constructor(readonly email: Email) {
+	private constructor(
+		readonly email: Email,
+		readonly baseUrl: string,
+	) {
 		super();
 	}
 
 	static create(data: unknown): DtoValidationResult<ForgotPasswordDto> {
 		return BaseDto.validate(ForgotPasswordDto.schema, data).map(
-			({ email }) => new ForgotPasswordDto(email),
+			({ email, baseUrl }) => new ForgotPasswordDto(email, baseUrl),
 		);
 	}
 }
 
 export class ResetPasswordDto extends BaseDto {
 	private static readonly schema = z.object({
-		token: z.string().min(1),
-		newPassword: z.string().min(1),
+		reqId: UUID,
+		newPassword: Password,
 	});
 
 	private constructor(
-		readonly token: string,
-		readonly newPassword: string,
+		readonly reqId: UUID,
+		readonly newPassword: Password,
 	) {
 		super();
 	}
 
 	static create(data: unknown): DtoValidationResult<ResetPasswordDto> {
 		return BaseDto.validate(ResetPasswordDto.schema, data).map(
-			({ token, newPassword }) => new ResetPasswordDto(token, newPassword),
+			({ reqId, newPassword }) => new ResetPasswordDto(reqId, newPassword),
 		);
 	}
 }

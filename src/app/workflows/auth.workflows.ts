@@ -8,6 +8,7 @@ import { AuthTokenService } from "@app/services/auth-token.service";
 import { EmailService } from "@app/services/email.service";
 import { PwHashingService } from "@app/services/pw-hashing.service";
 import { AppResult } from "@carbonteq/hexapp";
+import { ResetRequest } from "@domain/entities/reset-request/reset-request.entity";
 import { ResetRequestRepository } from "@domain/entities/reset-request/reset-request.repository";
 import { User } from "@domain/entities/user/user.entity";
 import { UserRepository } from "@domain/entities/user/user.repository";
@@ -40,26 +41,30 @@ export class AuthWorkflows {
 			User.new(username, email, pwHashed),
 		);
 
-		// TODO: send email
+		// TODO: send verification email after adding isVerified property on user
 
 		const loginToken = user.map((u) => this.tokenServ.sign({ userId: u.id }));
 
 		return AppResult.fromResult(loginToken);
 	}
 
-	async forgotPassword({ email }: ForgotPasswordDto) {
-		//Find user
+	async forgotPassword({ email, baseUrl }: ForgotPasswordDto) {
 		const user = await this.userRepo.fetchByEmail(email);
 
-		//TODO: If user found, then generate resetToken.
-		const resetToken = user.map((u) => this.tokenServ.sign({ userId: u.id }));
+		const resetReq = await user
+			.map(ResetRequest.forUser)
+			.bind((req) => this.resetRequestRepo.insert(req));
 
-		//TODO: Save this reset Token in the resetRequestTBl
+		const _emailRes = await resetReq.map((req) =>
+			this.emailServ.sendForgotPasswordEmail(email, baseUrl, req.id),
+		);
 
-		//TODO: Generate an email with the appended token and send it to the provided email.
+		return AppResult.Ok({
+			message: "You'll recieve an email with the link to reset your password",
+		});
 	}
 
-	async resetPassword({ token, newPassword }: ResetPasswordDto) {
+	async resetPassword({ reqId: token, newPassword }: ResetPasswordDto) {
 		//TODO: Find token from resetRequest table from the db.
 		//TODO: Find the user using the userID obtained from token.
 		//TODO: Create a new Hash against the newPassword.

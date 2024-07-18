@@ -1,13 +1,12 @@
 import { Result } from "@carbonteq/fp";
-import { RepositoryResult } from "@carbonteq/hexapp";
+import { NotFoundError, RepositoryResult } from "@carbonteq/hexapp";
 import { ResetRequest } from "@domain/entities/reset-request/reset-request.entity";
-import { ResetRequestNotFound } from "@domain/entities/reset-request/reset-request.errors";
+import { InvalidResetReq } from "@domain/entities/reset-request/reset-request.errors";
 import { ResetRequestRepository } from "@domain/entities/reset-request/reset-request.repository";
 import { Injectable, Provider } from "@nestjs/common";
 import { eq } from "drizzle-orm";
 import { DrizzleDb, InjectDb } from "../db-connection";
-import { resetRequestTbl } from "../models/reset-request.model";
-import { handleDrizzleErr } from "../utils";
+import { resetReqTbl } from "../models/reset-request.model";
 
 @Injectable()
 class ResetRequestDrizzleRepo extends ResetRequestRepository {
@@ -19,38 +18,28 @@ class ResetRequestDrizzleRepo extends ResetRequestRepository {
 		resetRequest: ResetRequest,
 	): Promise<RepositoryResult<ResetRequest>> {
 		const data = resetRequest.serialize();
-		try {
-			await this.db.insert(resetRequestTbl).values(data);
 
-			return Result.Ok(resetRequest);
-		} catch (err) {
-			//If there already exists a request for this userId or token, replace that one with the current one
-			//To prevent a user from opening multiple resetRequests.
+		await this.db.insert(resetReqTbl).values(data);
 
-			return handleDrizzleErr(err, {
-				UniqueConstaintViolation: (e) => {
-					const isUsernameErr = e.message.includes("username");
-
-					// const [identifier, field] = isUsernameErr
-					//     ? ([resetRequest.userId, "username"] as const)
-					//     : ([resetRequest.email, "email"] as const);
-
-					return Result.Err(new Error());
-				},
-			});
-		}
+		return Result.Ok(resetRequest);
 	}
 
-	async fetchByToken(
-		token: ResetRequest["token"],
-	): Promise<RepositoryResult<ResetRequest, ResetRequestNotFound>> {
-		const data = await this.db.query.reset_request.findFirst({
-			where: eq(resetRequestTbl.token, token),
+	async fetchById(
+		id: ResetRequest["id"],
+	): Promise<RepositoryResult<ResetRequest, InvalidResetReq>> {
+		const data = await this.db.query.resetReq.findFirst({
+			where: eq(resetReqTbl.id, id),
 		});
 
-		if (!data) return Result.Err(new ResetRequestNotFound(token));
+		if (!data) return Result.Err(new InvalidResetReq(id));
 
 		return Result.Ok(ResetRequest.fromSerialized(data));
+	}
+
+	update(
+		entity: ResetRequest,
+	): Promise<RepositoryResult<ResetRequest, NotFoundError>> {
+		throw new Error("Method not implemented.");
 	}
 }
 

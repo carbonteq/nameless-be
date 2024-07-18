@@ -1,8 +1,9 @@
 import { BaseEntity, Email, type IEntity, Omitt } from "@carbonteq/hexapp";
+import { Username } from "@domain/refined/user.refined";
 import { SimpleSerialized } from "@shared/types";
 
 export interface IUser extends IEntity {
-	username: string;
+	username: Username;
 	email: Email;
 	pwHashed: string;
 	// TODO: add isVerified
@@ -16,7 +17,7 @@ export class User extends BaseEntity implements IUser {
 	#pwHashed: IUser["pwHashed"];
 
 	private constructor(
-		readonly username: string,
+		readonly username: Username,
 		email: Email,
 		pwHashed: string,
 	) {
@@ -34,7 +35,7 @@ export class User extends BaseEntity implements IUser {
 		return this.#pwHashed;
 	}
 
-	static new(username: string, email: Email, pwHashed: string) {
+	static new(username: Username, email: Email, pwHashed: string) {
 		return new User(username, email, pwHashed);
 	}
 
