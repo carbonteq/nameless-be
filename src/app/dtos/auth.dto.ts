@@ -43,3 +43,39 @@ export class SignUpDto extends BaseDto {
 		);
 	}
 }
+
+export class ForgotPasswordDto extends BaseDto {
+	private static readonly schema = z.object({
+		email: Email,
+	});
+
+	private constructor(readonly email: Email) {
+		super();
+	}
+
+	static create(data: unknown): DtoValidationResult<ForgotPasswordDto> {
+		return BaseDto.validate(ForgotPasswordDto.schema, data).map(
+			({ email }) => new ForgotPasswordDto(email),
+		);
+	}
+}
+
+export class ResetPasswordDto extends BaseDto {
+	private static readonly schema = z.object({
+		token: z.string().min(1),
+		newPassword: z.string().min(1),
+	});
+
+	private constructor(
+		readonly token: string,
+		readonly newPassword: string,
+	) {
+		super();
+	}
+
+	static create(data: unknown): DtoValidationResult<ResetPasswordDto> {
+		return BaseDto.validate(ResetPasswordDto.schema, data).map(
+			({ token, newPassword }) => new ResetPasswordDto(token, newPassword),
+		);
+	}
+}

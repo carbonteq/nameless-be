@@ -55,6 +55,7 @@
 		"pino-pretty": "^11.2.1",
 		"reflect-metadata": "^0.2.0",
 		"rxjs": "^7.8.1",
+		"scoop": "^0.0.2",
 		"zod": "^3.23.8",
 		"zod-validation-error": "^3.3.0"
 	},

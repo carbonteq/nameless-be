@@ -53,9 +53,17 @@ pids
 *.pid.lock
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
+<<<<<<< HEAD
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 .nvim.lua
 
 # Settings
+||||||| parent of 053f2de (Add forgot password functionality)
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+<<<<<<< HEAD
+
+# Settings
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json# Settings
 /package-lock.json
 .vscode
+.nvim.lua
