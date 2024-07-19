@@ -7,11 +7,13 @@ import type {
 import { AuthTokenService } from "@app/services/auth-token.service";
 import { EmailService } from "@app/services/email.service";
 import { PwHashingService } from "@app/services/pw-hashing.service";
+import { Result } from "@carbonteq/fp";
 import { AppResult } from "@carbonteq/hexapp";
 import { ResetRequest } from "@domain/entities/reset-request/reset-request.entity";
 import { ResetRequestRepository } from "@domain/entities/reset-request/reset-request.repository";
 import { User } from "@domain/entities/user/user.entity";
 import { UserRepository } from "@domain/entities/user/user.repository";
+import { AuthDomainService } from "@domain/services/auth.domain-service";
 import { Injectable } from "@nestjs/common";
 
 @Injectable()
@@ -22,6 +24,7 @@ export class AuthWorkflows {
 		private readonly userRepo: UserRepository,
 		private readonly resetRequestRepo: ResetRequestRepository,
 		private readonly emailServ: EmailService,
+		private readonly authDomServ: AuthDomainService,
 	) {}
 
 	async login({ email, password }: LoginDto) {
@@ -64,30 +67,36 @@ export class AuthWorkflows {
 		});
 	}
 
+	private async persistPasswordUpdateEnts(req: ResetRequest, user: User) {
+		const updatedUser = await this.userRepo.update(user);
+		const updatedReq = await updatedUser.zip(() =>
+			this.resetRequestRepo.update(req),
+		);
+
+		return updatedReq;
+	}
+
 	async resetPassword({ reqId, newPassword }: ResetPasswordDto) {
-		//Find request from resetRequest table from the db.
 		const resReqRes = await this.resetRequestRepo.fetchById(reqId);
 
-		//Find the user using the userID obtained from token.
-		const userRes = await resReqRes.bind((token) =>
+		const userRes = await resReqRes.zip((token) =>
 			this.userRepo.fetchById(token.userId),
 		);
 
-		//Create a new Hash against the newPassword.
 		const pwHashed = this.pwHashServ.hash(newPassword);
 
-		//Update user password in the database.
+		const updateRes = await userRes
+			.bind(([req, user]) =>
+				this.authDomServ.updatePassword(req, user, pwHashed),
+			)
+			.bind(([user, req]) => this.persistPasswordUpdateEnts(req, user));
 
-		await userRes
-			.map((user) => user.passwordUpdate(pwHashed))
-			.bind((user) => this.userRepo.update(user));
-
-		//TODO: Update active property for reset request.
-
-		return AppResult.Ok({
+		const presentationRes = updateRes.map(() => ({
 			message:
 				"Your password has been successfully reset. You may now login using your new password.",
-		});
+		}));
+
+		return AppResult.fromResult(presentationRes);
 	}
 
 	// TODO: complete this

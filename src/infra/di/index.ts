@@ -1,4 +1,5 @@
 import { AuthWorkflows } from "@app/workflows/auth.workflows";
+import { AuthDomainService } from "@domain/services/auth.domain-service";
 import { AuthTokenServiceProvider } from "@infra/auth-token";
 import { DbModule } from "@infra/db";
 import { EmailServProvider } from "@infra/email";
@@ -30,11 +31,19 @@ const BASE_SERVICES = [
 })
 export class BaseDiModule {}
 
+const DOMAIN_SERVICES = [AuthDomainService];
+@Module({
+	imports: [DbModule, BaseDiModule],
+	providers: DOMAIN_SERVICES,
+	exports: DOMAIN_SERVICES,
+})
+class DomainServicesModule {}
+
 const APP_SERVICES = [];
 
 @Global()
 @Module({
-	imports: [DbModule, BaseDiModule],
+	imports: [DbModule, BaseDiModule, DomainServicesModule],
 	providers: APP_SERVICES,
 	exports: APP_SERVICES,
 })

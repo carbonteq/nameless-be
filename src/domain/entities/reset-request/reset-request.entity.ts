@@ -1,6 +1,8 @@
+import { Result } from "@carbonteq/fp";
 import { BaseEntity, DateTime, type IEntity, UUID } from "@carbonteq/hexapp";
 import { SimpleSerialized } from "@shared/types";
 import { User } from "../user/user.entity";
+import { InvalidResetReq } from "./reset-request.errors";
 
 export interface IResetRequest extends IEntity {
 	userId: UUID;
@@ -25,6 +27,21 @@ export class ResetRequest extends BaseEntity implements IResetRequest {
 		super();
 
 		this.#active = active;
+	}
+
+	guardAgainstInvalidUpdate(): Result<this, InvalidResetReq> {
+		if (this.#active) return Result.Ok(this);
+
+		return Result.Err(new InvalidResetReq(this.id));
+	}
+
+	setInvactive() {
+		return this.guardAgainstInvalidUpdate().map((req) => {
+			req.#active = false;
+			req.markUpdated();
+
+			return req;
+		});
 	}
 
 	static forUser(user: User) {
