@@ -39,6 +39,12 @@ export class User extends BaseEntity implements IUser {
 		return new User(username, email, pwHashed);
 	}
 
+	passwordUpdate(pwHashed: string) {
+		this.#pwHashed = pwHashed;
+		this.markUpdated();
+		return this;
+	}
+
 	forUpdate(): UserUpdateData {
 		return {
 			...super.forUpdate(),

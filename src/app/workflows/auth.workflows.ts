@@ -64,11 +64,30 @@ export class AuthWorkflows {
 		});
 	}
 
-	async resetPassword({ reqId: token, newPassword }: ResetPasswordDto) {
-		//TODO: Find token from resetRequest table from the db.
-		//TODO: Find the user using the userID obtained from token.
-		//TODO: Create a new Hash against the newPassword.
-		//TODO: Update user password in the database.
+	async resetPassword({ reqId, newPassword }: ResetPasswordDto) {
+		//Find request from resetRequest table from the db.
+		const resReqRes = await this.resetRequestRepo.fetchById(reqId);
+
+		//Find the user using the userID obtained from token.
+		const userRes = await resReqRes.bind((token) =>
+			this.userRepo.fetchById(token.userId),
+		);
+
+		//Create a new Hash against the newPassword.
+		const pwHashed = this.pwHashServ.hash(newPassword);
+
+		//Update user password in the database.
+
+		await userRes
+			.map((user) => user.passwordUpdate(pwHashed))
+			.bind((user) => this.userRepo.update(user));
+
+		//TODO: Update active property for reset request.
+
+		return AppResult.Ok({
+			message:
+				"Your password has been successfully reset. You may now login using your new password.",
+		});
 	}
 
 	// TODO: complete this
