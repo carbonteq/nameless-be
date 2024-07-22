@@ -95,7 +95,6 @@ export class AuthWorkflows {
 			message:
 				"Your password has been successfully reset. You may now login using your new password.",
 		}));
-
 		return AppResult.fromResult(presentationRes);
 	}
 
