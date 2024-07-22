@@ -1,5 +1,11 @@
 import { Result } from "@carbonteq/fp";
-import { BaseEntity, DateTime, type IEntity, UUID } from "@carbonteq/hexapp";
+import {
+	BaseEntity,
+	DateTime,
+	type IEntity,
+	Omitt,
+	UUID,
+} from "@carbonteq/hexapp";
 import { SimpleSerialized } from "@shared/types";
 import { User } from "../user/user.entity";
 import { InvalidResetReq } from "./reset-request.errors";
@@ -11,6 +17,7 @@ export interface IResetRequest extends IEntity {
 }
 
 export type SerializedResetRequest = SimpleSerialized<IResetRequest>;
+type ResetReqUpdateData = Pick<IResetRequest, "active" | "updatedAt">;
 
 const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
@@ -50,6 +57,13 @@ export class ResetRequest extends BaseEntity implements IResetRequest {
 
 	get active() {
 		return this.#active;
+	}
+
+	forUpdate(): ResetReqUpdateData {
+		return {
+			...super.forUpdate(),
+			active: this.#active,
+		};
 	}
 
 	static fromSerialized(other: SerializedResetRequest): ResetRequest {

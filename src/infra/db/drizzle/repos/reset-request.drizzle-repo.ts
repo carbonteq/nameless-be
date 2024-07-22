@@ -5,6 +5,7 @@ import { InvalidResetReq } from "@domain/entities/reset-request/reset-request.er
 import { ResetRequestRepository } from "@domain/entities/reset-request/reset-request.repository";
 import { Injectable, Provider } from "@nestjs/common";
 import { eq } from "drizzle-orm";
+import { reset } from "effect/FiberRef";
 import { DrizzleDb, InjectDb } from "../db-connection";
 import { resetReqTbl } from "../models/reset-request.model";
 
@@ -36,10 +37,17 @@ class ResetRequestDrizzleRepo extends ResetRequestRepository {
 		return Result.Ok(ResetRequest.fromSerialized(data));
 	}
 
-	update(
-		entity: ResetRequest,
-	): Promise<RepositoryResult<ResetRequest, NotFoundError>> {
-		throw new Error("Method not implemented.");
+	async update(
+		resetReq: ResetRequest,
+	): Promise<RepositoryResult<ResetRequest, InvalidResetReq>> {
+		const data = resetReq.forUpdate();
+
+		await this.db
+			.update(resetReqTbl)
+			.set(data)
+			.where(eq(resetReqTbl.id, resetReq.id));
+
+		return Result.Ok(resetReq);
 	}
 }
 

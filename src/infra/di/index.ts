@@ -32,6 +32,7 @@ const BASE_SERVICES = [
 export class BaseDiModule {}
 
 const DOMAIN_SERVICES = [AuthDomainService];
+@Global()
 @Module({
 	imports: [DbModule, BaseDiModule],
 	providers: DOMAIN_SERVICES,

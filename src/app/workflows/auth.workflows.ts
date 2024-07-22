@@ -7,7 +7,6 @@ import type {
 import { AuthTokenService } from "@app/services/auth-token.service";
 import { EmailService } from "@app/services/email.service";
 import { PwHashingService } from "@app/services/pw-hashing.service";
-import { Result } from "@carbonteq/fp";
 import { AppResult } from "@carbonteq/hexapp";
 import { ResetRequest } from "@domain/entities/reset-request/reset-request.entity";
 import { ResetRequestRepository } from "@domain/entities/reset-request/reset-request.repository";
@@ -78,7 +77,6 @@ export class AuthWorkflows {
 
 	async resetPassword({ reqId, newPassword }: ResetPasswordDto) {
 		const resReqRes = await this.resetRequestRepo.fetchById(reqId);
-
 		const userRes = await resReqRes.zip((token) =>
 			this.userRepo.fetchById(token.userId),
 		);
