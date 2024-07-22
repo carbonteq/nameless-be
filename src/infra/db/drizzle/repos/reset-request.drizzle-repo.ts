@@ -5,7 +5,6 @@ import { InvalidResetReq } from "@domain/entities/reset-request/reset-request.er
 import { ResetRequestRepository } from "@domain/entities/reset-request/reset-request.repository";
 import { Injectable, Provider } from "@nestjs/common";
 import { eq } from "drizzle-orm";
-import { reset } from "effect/FiberRef";
 import { DrizzleDb, InjectDb } from "../db-connection";
 import { resetReqTbl } from "../models/reset-request.model";
 

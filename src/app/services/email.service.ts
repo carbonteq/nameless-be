@@ -1,4 +1,5 @@
 import { Email, UUID } from "@carbonteq/hexapp";
+import { templates } from "@infra/email/email-templates";
 
 export interface EmailPayload<T extends Record<string, unknown>> {
 	to: Email;
@@ -16,6 +17,7 @@ export abstract class EmailService {
 		return await this.send({
 			to: email,
 			subject: "Verify your email",
+			templateId: "verification",
 			templateVars: {
 				verificationLink: `${baseUrl}/${ticketId}`,
 			},
@@ -26,6 +28,7 @@ export abstract class EmailService {
 		return await this.send({
 			to: email,
 			subject: "Reset your password",
+			templateId: "forgetPassword",
 			templateVars: {
 				resetLink: `${baseUrl}/${reqId}`,
 			},
