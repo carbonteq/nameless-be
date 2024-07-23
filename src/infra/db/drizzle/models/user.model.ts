@@ -9,5 +9,5 @@ export const userTbl = pgTable("users", {
 	username: text("username").$type<Username>().notNull().unique(),
 	email: text("email").$type<Email>().notNull().unique(),
 	pwHashed: text("pwHashed").notNull(),
-	isVerified: boolean("isVerified").default(false),
+	isVerified: boolean("isVerified").default(false).notNull(),
 });

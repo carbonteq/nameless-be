@@ -2,22 +2,22 @@ import { Result } from "@carbonteq/fp";
 import { BaseEntity, DateTime, type IEntity, UUID } from "@carbonteq/hexapp";
 import { SimpleSerialized } from "@shared/types";
 import { User } from "../user/user.entity";
-import { InvalidResetReq } from "./reset-request.errors";
+import { InvalidVerifyReq } from "./verify-request.errors";
 
-export interface IResetRequest extends IEntity {
+export interface IVerifyRequest extends IEntity {
 	userId: UUID;
 	expiryDate: DateTime;
 	active: boolean;
 }
 
-export type SerializedResetRequest = SimpleSerialized<IResetRequest>;
-type ResetReqUpdateData = Pick<IResetRequest, "active" | "updatedAt">;
+export type SerializedVerifyRequest = SimpleSerialized<IVerifyRequest>;
+type VerifyReqUpdateData = Pick<IVerifyRequest, "active" | "updatedAt">;
 
 const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
 const genExp = () => new Date(Date.now() + ONE_WEEK_MS);
 
-export class ResetRequest extends BaseEntity implements IResetRequest {
+export class VerifyRequest extends BaseEntity implements IVerifyRequest {
 	#active: boolean;
 
 	private constructor(
@@ -29,11 +29,10 @@ export class ResetRequest extends BaseEntity implements IResetRequest {
 
 		this.#active = active;
 	}
-
-	guardAgainstInvalidUpdate(): Result<this, InvalidResetReq> {
+	guardAgainstInvalidUpdate(): Result<this, InvalidVerifyReq> {
 		if (this.#active) return Result.Ok(this);
 
-		return Result.Err(new InvalidResetReq(this.id));
+		return Result.Err(new InvalidVerifyReq(this.id));
 	}
 
 	setInvactive() {
@@ -45,37 +44,37 @@ export class ResetRequest extends BaseEntity implements IResetRequest {
 		});
 	}
 
-	guardAgainstExpiry(): Result<this, InvalidResetReq> {
+	guardAgainstExpiry(): Result<this, InvalidVerifyReq> {
 		const now = new Date();
 		if (this.expiryDate >= now) return Result.Ok(this);
 
-		return Result.Err(new InvalidResetReq(this.id));
+		return Result.Err(new InvalidVerifyReq(this.id));
 	}
 
 	static forUser(user: User) {
-		return new ResetRequest(user.id, DateTime.from(genExp()), true);
+		return new VerifyRequest(user.id, DateTime.from(genExp()), true);
 	}
 
 	get active() {
 		return this.#active;
 	}
 
-	forUpdate(): ResetReqUpdateData {
+	forUpdate(): VerifyReqUpdateData {
 		return {
 			...super.forUpdate(),
 			active: this.#active,
 		};
 	}
 
-	static fromSerialized(other: SerializedResetRequest): ResetRequest {
-		const ent = new ResetRequest(other.userId, other.expiryDate, other.active);
+	static fromSerialized(other: SerializedVerifyRequest): VerifyRequest {
+		const ent = new VerifyRequest(other.userId, other.expiryDate, other.active);
 
 		ent._fromSerialized(other);
 
 		return ent;
 	}
 
-	serialize(): SerializedResetRequest {
+	serialize(): SerializedVerifyRequest {
 		return {
 			...super._serialize(),
 			userId: this.userId,

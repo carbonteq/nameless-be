@@ -1,6 +1,6 @@
 {
-	"id": "5fe6729e-6707-4210-bf0f-0e23158a29a3",
-	"prevId": "03fbabf7-01a3-4a98-bea9-93e72ee949f3",
+	"id": "a29ff17f-d9c5-48b1-9924-0b2b48bc9f15",
+	"prevId": "5fe6729e-6707-4210-bf0f-0e23158a29a3",
 	"version": "7",
 	"dialect": "postgresql",
 	"tables": {
@@ -129,6 +129,65 @@
 					"columns": ["email"]
 				}
 			}
+		},
+		"public.verify_requests": {
+			"name": "verify_requests",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"primaryKey": true,
+					"notNull": true,
+					"default": "gen_random_uuid()"
+				},
+				"createdAt": {
+					"name": "createdAt",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				},
+				"updatedAt": {
+					"name": "updatedAt",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				},
+				"user_id": {
+					"name": "user_id",
+					"type": "uuid",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"expiry_date": {
+					"name": "expiry_date",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"active": {
+					"name": "active",
+					"type": "boolean",
+					"primaryKey": false,
+					"notNull": true
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"verify_requests_user_id_users_id_fk": {
+					"name": "verify_requests_user_id_users_id_fk",
+					"tableFrom": "verify_requests",
+					"tableTo": "users",
+					"columnsFrom": ["user_id"],
+					"columnsTo": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {}
 		}
 	},
 	"enums": {},

@@ -1,5 +1,5 @@
 import { Result } from "@carbonteq/fp";
-import { NotFoundError, RepositoryResult } from "@carbonteq/hexapp";
+import { RepositoryResult } from "@carbonteq/hexapp";
 import { ResetRequest } from "@domain/entities/reset-request/reset-request.entity";
 import { InvalidResetReq } from "@domain/entities/reset-request/reset-request.errors";
 import { ResetRequestRepository } from "@domain/entities/reset-request/reset-request.repository";

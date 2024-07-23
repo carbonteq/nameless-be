@@ -13,6 +13,8 @@ import { ResetRequest } from "@domain/entities/reset-request/reset-request.entit
 import { ResetRequestRepository } from "@domain/entities/reset-request/reset-request.repository";
 import { User } from "@domain/entities/user/user.entity";
 import { UserRepository } from "@domain/entities/user/user.repository";
+import { VerifyRequest } from "@domain/entities/verify-request/verify-request.entity";
+import { VerifyRequestRepository } from "@domain/entities/verify-request/verify-request.respository";
 import { AuthDomainService } from "@domain/services/auth.domain-service";
 import { Injectable } from "@nestjs/common";
 
@@ -25,6 +27,7 @@ export class AuthWorkflows {
 		private readonly resetRequestRepo: ResetRequestRepository,
 		private readonly emailServ: EmailService,
 		private readonly authDomServ: AuthDomainService,
+		private readonly verifyRequestRepo: VerifyRequestRepository,
 	) {}
 
 	async login({ email, password }: LoginDto) {
@@ -44,7 +47,19 @@ export class AuthWorkflows {
 			User.new(username, email, pwHashed),
 		);
 
-		//TODO: send verification email after adding isVerified property on user
+		//Send verification email after adding isVerified property on user
+		const verifyReq = await user
+			.map(VerifyRequest.forUser)
+			.bind((req) => this.verifyRequestRepo.insert(req));
+
+		//Idk what to do with baseUrl so hardcoding it for now.
+		const _emailRes = await verifyReq.map((req) =>
+			this.emailServ.sendVerificationLink(
+				email,
+				"http://localhost/3000/auth/verify",
+				req.id,
+			),
+		);
 
 		const loginToken = user.map((u) => this.tokenServ.sign({ userId: u.id }));
 
@@ -97,6 +112,28 @@ export class AuthWorkflows {
 		return AppResult.fromResult(presentationRes);
 	}
 
-	// TODO: complete this
-	async verifyUser({ ticketID }: VerifyDto) {}
+	private async persistVerificationEnts(req: VerifyRequest, user: User) {
+		const updatedUser = await this.userRepo.update(user);
+		const updatedReq = await updatedUser.zip(() =>
+			this.verifyRequestRepo.update(req),
+		);
+
+		return updatedReq;
+	}
+
+	async verifyUser({ ticketID }: VerifyDto) {
+		const verifyReqRes = await this.verifyRequestRepo.fetchById(ticketID);
+		const userRes = await verifyReqRes.zip((token) =>
+			this.userRepo.fetchById(token.userId),
+		);
+
+		const updateRes = await userRes
+			.bind(([req, user]) => this.authDomServ.verifyUser(req, user))
+			.bind(([req, user]) => this.persistVerificationEnts(req, user));
+
+		const presentationRes = updateRes.map(() => ({
+			message: "Your account has been succesfully activated.",
+		}));
+		return AppResult.fromResult(presentationRes);
+	}
 }

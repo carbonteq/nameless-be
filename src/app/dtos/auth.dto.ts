@@ -53,16 +53,16 @@ export class SignUpDto extends BaseDto {
 
 export class VerifyDto extends BaseDto {
 	private static readonly schema = z.object({
-		ticketID: z.string(),
+		ticketId: UUID,
 	});
 
-	private constructor(readonly ticketID: string) {
+	private constructor(readonly ticketID: UUID) {
 		super();
 	}
 
 	static create(data: unknown): DtoValidationResult<VerifyDto> {
 		return BaseDto.validate(VerifyDto.schema, data).map(
-			({ ticketID }) => new VerifyDto(ticketID),
+			({ ticketId: ticketID }) => new VerifyDto(ticketID),
 		);
 	}
 }

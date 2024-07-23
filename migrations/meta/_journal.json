@@ -19,8 +19,15 @@
 		{
 			"idx": 2,
 			"version": "7",
-			"when": 1721710903631,
-			"tag": "0002_add isVerified to Usertbl",
+			"when": 1721730024815,
+			"tag": "0002_add_isVerified_to_userTBl",
+			"breakpoints": true
+		},
+		{
+			"idx": 3,
+			"version": "7",
+			"when": 1721733011454,
+			"tag": "0003_add_verify_request",
 			"breakpoints": true
 		}
 	]
