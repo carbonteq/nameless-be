@@ -3,6 +3,7 @@ import type {
 	LoginDto,
 	ResetPasswordDto,
 	SignUpDto,
+	VerifyDto,
 } from "@app/dtos/auth.dto";
 import { AuthTokenService } from "@app/services/auth-token.service";
 import { EmailService } from "@app/services/email.service";
@@ -43,7 +44,7 @@ export class AuthWorkflows {
 			User.new(username, email, pwHashed),
 		);
 
-		// TODO: send verification email after adding isVerified property on user
+		//TODO: send verification email after adding isVerified property on user
 
 		const loginToken = user.map((u) => this.tokenServ.sign({ userId: u.id }));
 
@@ -97,5 +98,5 @@ export class AuthWorkflows {
 	}
 
 	// TODO: complete this
-	async verifyUser() {}
+	async verifyUser({ ticketID }: VerifyDto) {}
 }

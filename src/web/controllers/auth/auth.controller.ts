@@ -3,6 +3,7 @@ import {
 	LoginDto,
 	ResetPasswordDto,
 	SignUpDto,
+	VerifyDto,
 } from "@app/dtos/auth.dto";
 import { AuthWorkflows } from "@app/workflows/auth.workflows";
 import { Body, Controller, HttpCode, Post, Put } from "@nestjs/common";
@@ -40,10 +41,10 @@ export class AuthController {
 		return await this.wfs.resetPassword(dto);
 	}
 
-	//@Put("/verify")
-	//async verifyUser(@Body() body: unknown) {
-	//	// create dto
-	//
-	//	return await this.wfs.verifyUser(dto);
-	//}
+	@Put("/verify")
+	async verifyUser(@Body() body: unknown) {
+		const dto = VerifyDto.create(body).unwrap();
+
+		return await this.wfs.verifyUser(dto);
+	}
 }

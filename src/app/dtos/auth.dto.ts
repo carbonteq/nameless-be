@@ -5,6 +5,7 @@ import {
 	UUID,
 } from "@carbonteq/hexapp";
 import { Password, Username } from "@domain/refined/user.refined";
+import { uuid } from "drizzle-orm/pg-core";
 import z from "zod";
 
 export class LoginDto extends BaseDto {
@@ -46,6 +47,22 @@ export class SignUpDto extends BaseDto {
 		return BaseDto.validate(SignUpDto.schema, data).map(
 			({ email, password, username }) =>
 				new SignUpDto(username, email, password),
+		);
+	}
+}
+
+export class VerifyDto extends BaseDto {
+	private static readonly schema = z.object({
+		ticketID: z.string(),
+	});
+
+	private constructor(readonly ticketID: string) {
+		super();
+	}
+
+	static create(data: unknown): DtoValidationResult<VerifyDto> {
+		return BaseDto.validate(VerifyDto.schema, data).map(
+			({ ticketID }) => new VerifyDto(ticketID),
 		);
 	}
 }
