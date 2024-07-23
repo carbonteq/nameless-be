@@ -6,7 +6,7 @@ export interface IUser extends IEntity {
 	username: Username;
 	email: Email;
 	pwHashed: string;
-	// TODO: add isVerified
+	isVerified: boolean; //false by default
 }
 
 export type SerializedUser = SimpleSerialized<IUser>;
@@ -15,16 +15,19 @@ type UserUpdateData = Omitt<IUser, "id" | "createdAt" | "username">;
 export class User extends BaseEntity implements IUser {
 	#email: IUser["email"];
 	#pwHashed: IUser["pwHashed"];
+	isVerified: boolean;
 
 	private constructor(
 		readonly username: Username,
 		email: Email,
 		pwHashed: string,
+		isVerified: boolean,
 	) {
 		super();
 
 		this.#email = email;
 		this.#pwHashed = pwHashed;
+		this.isVerified = isVerified;
 	}
 
 	get email() {
@@ -35,8 +38,13 @@ export class User extends BaseEntity implements IUser {
 		return this.#pwHashed;
 	}
 
-	static new(username: Username, email: Email, pwHashed: string) {
-		return new User(username, email, pwHashed);
+	static new(
+		username: Username,
+		email: Email,
+		pwHashed: string,
+		isVerified = false,
+	) {
+		return new User(username, email, pwHashed, isVerified);
 	}
 
 	passwordUpdate(pwHashed: string) {
@@ -50,11 +58,17 @@ export class User extends BaseEntity implements IUser {
 			...super.forUpdate(),
 			email: this.#email,
 			pwHashed: this.#pwHashed,
+			isVerified: this.isVerified,
 		};
 	}
 
 	static fromSerialized(other: SerializedUser): User {
-		const ent = new User(other.username, other.email, other.pwHashed);
+		const ent = new User(
+			other.username,
+			other.email,
+			other.pwHashed,
+			other.isVerified,
+		);
 
 		ent._fromSerialized(other);
 
@@ -67,6 +81,7 @@ export class User extends BaseEntity implements IUser {
 			username: this.username,
 			email: this.#email,
 			pwHashed: this.#pwHashed,
+			isVerified: this.isVerified,
 		};
 	}
 }
