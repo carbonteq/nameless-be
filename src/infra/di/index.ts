@@ -1,4 +1,5 @@
 import { AuthWorkflows } from "@app/workflows/auth.workflows";
+import { UserWorkflows } from "@app/workflows/user.workflow";
 import { AuthDomainService } from "@domain/services/auth.domain-service";
 import { AuthTokenServiceProvider } from "@infra/auth-token";
 import { DbModule } from "@infra/db";
@@ -50,7 +51,7 @@ const APP_SERVICES = [];
 })
 class AppServiceModule {}
 
-const WORKFLOWS = [AuthWorkflows];
+const WORKFLOWS = [AuthWorkflows, UserWorkflows];
 
 @Global()
 @Module({

@@ -40,6 +40,7 @@ export class AuthWorkflows {
 		return AppResult.fromResult(tokenRes);
 	}
 
+	//TODO: Change the DTO to acoomodate baseURL.
 	async signup({ email, password, username }: SignUpDto) {
 		const pwHashed = this.pwHashServ.hash(password);
 

@@ -3,6 +3,7 @@ import { type MiddlewareConsumer, Module } from "@nestjs/common";
 import { APP_GUARD } from "@nestjs/core";
 import { AuthController } from "./controllers/auth/auth.controller";
 import { HealthController } from "./controllers/health.controller";
+import { UserController } from "./controllers/user/user.controller";
 import { AuthGuard } from "./utils/guards/auth.guard";
 
 @Module({
@@ -13,7 +14,7 @@ import { AuthGuard } from "./utils/guards/auth.guard";
 			useClass: AuthGuard,
 		},
 	],
-	controllers: [HealthController, AuthController],
+	controllers: [HealthController, AuthController, UserController],
 })
 export class WebModule {
 	configure(consumer: MiddlewareConsumer) {}
