@@ -1,8 +1,8 @@
 import type { Result } from "@carbonteq/fp";
-import { UnauthorizedOperation } from "@carbonteq/hexapp";
+import { UUID, UnauthorizedOperation } from "@carbonteq/hexapp";
 
 export interface AuthTokenPayload {
-	userId: string;
+	userId: UUID;
 }
 
 export class InvalidToken extends UnauthorizedOperation {
