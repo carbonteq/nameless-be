@@ -10,10 +10,10 @@ export class AuthDomainService {
 		resetPasswordReq: ResetRequest,
 		user: User,
 		newPwHashed: string,
-	): Result<[User, ResetRequest], InvalidResetReq> {
-		return resetPasswordReq.setInvactive().map((validatedReq) => {
-			const updatedUser = user.passwordUpdate(newPwHashed);
-			return [updatedUser, validatedReq] as [User, ResetRequest];
-		});
+	): Result<[ResetRequest, User], InvalidResetReq> {
+		return resetPasswordReq
+			.setInvactive()
+			.bind((resetPasswordReq) => resetPasswordReq.guardAgainstExpiry())
+			.combine(() => user.passwordUpdate(newPwHashed));
 	}
 }

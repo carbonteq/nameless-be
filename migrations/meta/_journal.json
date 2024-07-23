@@ -15,6 +15,13 @@
 			"when": 1721307343329,
 			"tag": "0001_add_reset_req",
 			"breakpoints": true
+		},
+		{
+			"idx": 2,
+			"version": "7",
+			"when": 1721710903631,
+			"tag": "0002_add isVerified to Usertbl",
+			"breakpoints": true
 		}
 	]
 }

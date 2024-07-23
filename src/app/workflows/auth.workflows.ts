@@ -87,7 +87,7 @@ export class AuthWorkflows {
 			.bind(([req, user]) =>
 				this.authDomServ.updatePassword(req, user, pwHashed),
 			)
-			.bind(([user, req]) => this.persistPasswordUpdateEnts(req, user));
+			.bind(([req, user]) => this.persistPasswordUpdateEnts(req, user));
 
 		const presentationRes = updateRes.map(() => ({
 			message:

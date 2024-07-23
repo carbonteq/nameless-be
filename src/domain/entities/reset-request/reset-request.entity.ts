@@ -51,6 +51,13 @@ export class ResetRequest extends BaseEntity implements IResetRequest {
 		});
 	}
 
+	guardAgainstExpiry(): Result<this, InvalidResetReq> {
+		const now = new Date();
+		if (this.expiryDate >= now) return Result.Ok(this);
+
+		return Result.Err(new InvalidResetReq(this.id));
+	}
+
 	static forUser(user: User) {
 		return new ResetRequest(user.id, DateTime.from(genExp()), true);
 	}
