@@ -33,20 +33,22 @@ export class SignUpDto extends BaseDto {
 		username: Username,
 		email: Email,
 		password: Password,
+		baseUrl: z.string().url(),
 	});
 
 	private constructor(
 		readonly username: Username,
 		readonly email: Email,
 		readonly password: Password,
+		readonly baseUrl: string,
 	) {
 		super();
 	}
 
 	static create(data: unknown): DtoValidationResult<SignUpDto> {
 		return BaseDto.validate(SignUpDto.schema, data).map(
-			({ email, password, username }) =>
-				new SignUpDto(username, email, password),
+			({ email, password, username, baseUrl }) =>
+				new SignUpDto(username, email, password, baseUrl),
 		);
 	}
 }

@@ -40,26 +40,19 @@ export class AuthWorkflows {
 		return AppResult.fromResult(tokenRes);
 	}
 
-	//TODO: Change the DTO to acoomodate baseURL.
-	async signup({ email, password, username }: SignUpDto) {
+	async signup({ email, password, username, baseUrl }: SignUpDto) {
 		const pwHashed = this.pwHashServ.hash(password);
 
 		const user = await this.userRepo.insert(
 			User.new(username, email, pwHashed),
 		);
 
-		//Send verification email after adding isVerified property on user
 		const verifyReq = await user
 			.map(VerifyRequest.forUser)
 			.bind((req) => this.verifyRequestRepo.insert(req));
 
-		//Idk what to do with baseUrl so hardcoding it for now.
 		const _emailRes = await verifyReq.map((req) =>
-			this.emailServ.sendVerificationLink(
-				email,
-				"http://localhost/3000/auth/verify",
-				req.id,
-			),
+			this.emailServ.sendVerificationLink(email, baseUrl, req.id),
 		);
 
 		const loginToken = user.map((u) => this.tokenServ.sign({ userId: u.id }));
