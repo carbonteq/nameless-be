@@ -29,7 +29,9 @@ export class UserWorkflows {
 	async getProfile(user: User) {
 		const { email, username } = user;
 		return AppResult.Ok({
+			username: user.userName,
 			email: user.email,
+			isVerified: user.isVerified,
 		});
 	}
 }

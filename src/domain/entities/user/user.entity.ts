@@ -38,6 +38,10 @@ export class User extends BaseEntity implements IUser {
 		return this.#pwHashed;
 	}
 
+	get userName() {
+		return this.username;
+	}
+
 	setIsVerified() {
 		this.isVerified = true;
 		return this;
