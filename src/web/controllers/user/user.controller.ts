@@ -1,6 +1,6 @@
 import { EditProfileDto } from "@app/dtos/user.dto";
 import { UserWorkflows } from "@app/workflows/user.workflow";
-import { Body, Controller, Get, Post, Put, Req } from "@nestjs/common";
+import { Body, Controller, Get, Put, Req } from "@nestjs/common";
 import { FastifyRequest } from "fastify";
 
 @Controller("api/users")

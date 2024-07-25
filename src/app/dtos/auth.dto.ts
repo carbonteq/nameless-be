@@ -5,7 +5,6 @@ import {
 	UUID,
 } from "@carbonteq/hexapp";
 import { Password, Username } from "@domain/refined/user.refined";
-import { uuid } from "drizzle-orm/pg-core";
 import z from "zod";
 
 export class LoginDto extends BaseDto {

@@ -34,7 +34,7 @@ export class AuthWorkflows {
 		const userRes = await this.userRepo.fetchByEmail(email);
 
 		const tokenRes = userRes
-			.bindErr((user) => this.pwHashServ.compare(password, user.pwHashed))
+			.zipErr((user) => this.pwHashServ.compare(password, user.pwHashed))
 			.map((user) => this.tokenServ.sign({ userId: user.id }));
 
 		return AppResult.fromResult(tokenRes);
@@ -87,17 +87,17 @@ export class AuthWorkflows {
 
 	async resetPassword({ reqId, newPassword }: ResetPasswordDto) {
 		const resReqRes = await this.resetRequestRepo.fetchById(reqId);
-		const userRes = await resReqRes.zip((token) =>
+		const userRes = await resReqRes.flatZip((token) =>
 			this.userRepo.fetchById(token.userId),
 		);
 
 		const pwHashed = this.pwHashServ.hash(newPassword);
 
 		const updateRes = await userRes
-			.bind(([req, user]) =>
+			.flatMap(([req, user]) =>
 				this.authDomServ.updatePassword(req, user, pwHashed),
 			)
-			.bind(([req, user]) => this.persistPasswordUpdateEnts(req, user));
+			.flatZip(([req, user]) => this.persistPasswordUpdateEnts(req, user));
 
 		const presentationRes = updateRes.map(() => ({
 			message:
@@ -108,7 +108,7 @@ export class AuthWorkflows {
 
 	private async persistVerificationEnts(req: VerifyRequest, user: User) {
 		const updatedUser = await this.userRepo.update(user);
-		const updatedReq = await updatedUser.zip(() =>
+		const updatedReq = await updatedUser.flatZip(() =>
 			this.verifyRequestRepo.update(req),
 		);
 
@@ -117,13 +117,13 @@ export class AuthWorkflows {
 
 	async verifyUser({ ticketID }: VerifyDto) {
 		const verifyReqRes = await this.verifyRequestRepo.fetchById(ticketID);
-		const userRes = await verifyReqRes.zip((token) =>
+		const userRes = await verifyReqRes.flatZip((token) =>
 			this.userRepo.fetchById(token.userId),
 		);
 
 		const updateRes = await userRes
-			.bind(([req, user]) => this.authDomServ.verifyUser(req, user))
-			.bind(([req, user]) => this.persistVerificationEnts(req, user));
+			.flatMap(([req, user]) => this.authDomServ.verifyUser(req, user))
+			.flatMap(([req, user]) => this.persistVerificationEnts(req, user));
 
 		const presentationRes = updateRes.map(() => ({
 			message: "Your account has been succesfully activated.",

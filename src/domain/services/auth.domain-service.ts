@@ -15,8 +15,8 @@ export class AuthDomainService {
 	): Result<[ResetRequest, User], InvalidResetReq> {
 		return resetPasswordReq
 			.setInvactive()
-			.bind((resetPasswordReq) => resetPasswordReq.guardAgainstExpiry())
-			.combine(() => user.passwordUpdate(newPwHashed));
+			.flatMap((resetPasswordReq) => resetPasswordReq.guardAgainstExpiry())
+			.flatZip(() => user.passwordUpdate(newPwHashed));
 	}
 
 	verifyUser(
@@ -25,7 +25,7 @@ export class AuthDomainService {
 	): Result<[VerifyRequest, User], InvalidVerifyReq> {
 		return verifyReq
 			.setInvactive()
-			.bind((verifyReq) => verifyReq.guardAgainstExpiry())
-			.combine(() => user.setIsVerified(true));
+			.flatMap((verifyReq) => verifyReq.guardAgainstExpiry())
+			.zip(() => user.setIsVerified(true));
 	}
 }

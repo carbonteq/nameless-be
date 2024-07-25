@@ -1,6 +1,8 @@
+import { Result, UnitResult } from "@carbonteq/fp";
 import { BaseEntity, Email, type IEntity, Omitt } from "@carbonteq/hexapp";
 import { Username } from "@domain/refined/user.refined";
 import { SimpleSerialized } from "@shared/types";
+import { UnverifiedUser } from "./user.errors";
 
 export interface IUser extends IEntity {
 	username: Username;
@@ -15,7 +17,7 @@ type UserUpdateData = Omitt<IUser, "id" | "createdAt" | "username">;
 export class User extends BaseEntity implements IUser {
 	#email: IUser["email"];
 	#pwHashed: IUser["pwHashed"];
-	isVerified: boolean;
+	#isVerified: boolean;
 
 	private constructor(
 		readonly username: Username,
@@ -27,7 +29,7 @@ export class User extends BaseEntity implements IUser {
 
 		this.#email = email;
 		this.#pwHashed = pwHashed;
-		this.isVerified = isVerified;
+		this.#isVerified = isVerified;
 	}
 
 	get email() {
@@ -38,40 +40,51 @@ export class User extends BaseEntity implements IUser {
 		return this.#pwHashed;
 	}
 
-	get userName() {
-		return this.username;
+	get isVerified() {
+		return this.#isVerified;
 	}
 
-	setIsVerified(status: boolean) {
-		this.isVerified = status;
-		return this;
+	static new(username: Username, email: Email, pwHashed: string) {
+		return new User(username, email, pwHashed, false);
 	}
-	static new(
-		username: Username,
-		email: Email,
-		pwHashed: string,
-		isVerified = false,
-	) {
-		return new User(username, email, pwHashed, isVerified);
+
+	ensureIsVerified(): UnitResult<UnverifiedUser> {
+		if (this.isVerified) return Result.UNIT_RESULT;
+
+		return Result.Err(new UnverifiedUser(this.id));
 	}
 
 	passwordUpdate(pwHashed: string) {
-		this.#pwHashed = pwHashed;
-		this.markUpdated();
-		return this;
+		return this.ensureIsVerified().map((_) => {
+			this.#pwHashed = pwHashed;
+			this.markUpdated();
+
+			return this;
+		});
 	}
 
 	emailUpdate(newEmail: Email) {
-		this.#email = newEmail;
+		return this.ensureIsVerified().map((_) => {
+			this.#email = newEmail;
+			this.markUpdated();
+
+			return this;
+		});
+	}
+
+	setIsVerified(status: boolean) {
+		this.#isVerified = status;
 		this.markUpdated();
+
 		return this;
 	}
+
 	forUpdate(): UserUpdateData {
 		return {
 			...super.forUpdate(),
 			email: this.#email,
 			pwHashed: this.#pwHashed,
-			isVerified: this.isVerified,
+			isVerified: this.#isVerified,
 		};
 	}
 
@@ -94,7 +107,7 @@ export class User extends BaseEntity implements IUser {
 			username: this.username,
 			email: this.#email,
 			pwHashed: this.#pwHashed,
-			isVerified: this.isVerified,
+			isVerified: this.#isVerified,
 		};
 	}
 }

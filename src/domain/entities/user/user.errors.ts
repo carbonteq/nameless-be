@@ -1,6 +1,8 @@
 import {
 	AlreadyExistsError,
+	GuardViolationError,
 	NotFoundError,
+	type UUID,
 	UnauthorizedOperation,
 } from "@carbonteq/hexapp";
 import { User } from "./user.entity";
@@ -23,5 +25,11 @@ export class UserAlreadyExists extends AlreadyExistsError {
 export class InvalidCredentials extends UnauthorizedOperation {
 	constructor() {
 		super("Invalid email/password");
+	}
+}
+
+export class UnverifiedUser extends GuardViolationError {
+	constructor(readonly id: UUID) {
+		super("Please verify your account");
 	}
 }

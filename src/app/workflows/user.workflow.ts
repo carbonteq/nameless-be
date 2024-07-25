@@ -28,7 +28,7 @@ export class UserWorkflows {
 
 	async getProfile(user: User) {
 		return AppResult.Ok({
-			username: user.userName,
+			username: user.username,
 			email: user.email,
 			isVerified: user.isVerified,
 		});
