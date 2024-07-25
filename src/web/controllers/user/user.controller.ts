@@ -3,13 +3,13 @@ import { UserWorkflows } from "@app/workflows/user.workflow";
 import { Body, Controller, Get, Post, Put, Req } from "@nestjs/common";
 import { FastifyRequest } from "fastify";
 
-@Controller("/users")
+@Controller("api/users")
 export class UserController {
 	constructor(private readonly wfs: UserWorkflows) {}
 
 	//TODO: Get method that is going to send the data for edit profile.
 
-	@Put("/me")
+	@Put("/profile")
 	async editprofile(@Req() request: FastifyRequest, @Body() body: unknown) {
 		const dto = EditProfileDto.create(body, request.user).unwrap();
 

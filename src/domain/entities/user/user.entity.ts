@@ -42,8 +42,8 @@ export class User extends BaseEntity implements IUser {
 		return this.username;
 	}
 
-	setIsVerified() {
-		this.isVerified = true;
+	setIsVerified(status: boolean) {
+		this.isVerified = status;
 		return this;
 	}
 	static new(
@@ -61,6 +61,11 @@ export class User extends BaseEntity implements IUser {
 		return this;
 	}
 
+	emailUpdate(newEmail: Email) {
+		this.#email = newEmail;
+		this.markUpdated();
+		return this;
+	}
 	forUpdate(): UserUpdateData {
 		return {
 			...super.forUpdate(),

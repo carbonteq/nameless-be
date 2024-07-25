@@ -26,6 +26,6 @@ export class AuthDomainService {
 		return verifyReq
 			.setInvactive()
 			.bind((verifyReq) => verifyReq.guardAgainstExpiry())
-			.combine(() => user.setIsVerified());
+			.combine(() => user.setIsVerified(true));
 	}
 }
