@@ -1,3 +1,4 @@
+import { ForgotPasswordDto } from "@app/dtos/auth.dto";
 import { Controller, Get } from "@nestjs/common";
 import { Public } from "@web/utils/decorators/public.decorator";
 
@@ -6,6 +7,6 @@ import { Public } from "@web/utils/decorators/public.decorator";
 export class HealthController {
 	@Get("/")
 	async validateEmail() {
-		return { up: true };
+		return ForgotPasswordDto.schema;
 	}
 }

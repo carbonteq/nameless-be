@@ -16,7 +16,7 @@ const BASE_SERVICES = [
 	EmailServProvider,
 ];
 
-@Global()
+@Global() //decorator making the module go global
 @Module({
 	imports: [
 		PinoAppLoggerModule,
@@ -33,6 +33,8 @@ const BASE_SERVICES = [
 })
 export class BaseDiModule {}
 
+//domain service modl
+
 const DOMAIN_SERVICES = [AuthDomainService, UserDomainService];
 @Global()
 @Module({
@@ -42,6 +44,7 @@ const DOMAIN_SERVICES = [AuthDomainService, UserDomainService];
 })
 class DomainServicesModule {}
 
+//app servic module
 const APP_SERVICES = [];
 
 @Global()
@@ -52,6 +55,7 @@ const APP_SERVICES = [];
 })
 class AppServiceModule {}
 
+//workflow module
 const WORKFLOWS = [AuthWorkflows, UserWorkflows];
 
 @Global()
@@ -62,6 +66,7 @@ const WORKFLOWS = [AuthWorkflows, UserWorkflows];
 })
 class WorkflowModule {}
 
+//root module/app module //not globallll
 @Module({
 	imports: [BaseDiModule, AppServiceModule, WorkflowModule],
 })

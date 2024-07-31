@@ -69,7 +69,7 @@ export class VerifyDto extends BaseDto {
 }
 
 export class ForgotPasswordDto extends BaseDto {
-	private static readonly schema = z.object({
+	static readonly schema = z.object({
 		email: Email,
 		baseUrl: z.string().url(),
 	});
