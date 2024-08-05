@@ -38,6 +38,7 @@
 						"maxLength": { "type": "number", "minimum": 0 },
 						"regex": { "type": "string" }
 					},
+					"additionalProperties": false,
 					"required": ["type"]
 				}
 			]
@@ -53,6 +54,7 @@
 						"max": { "type": "number" },
 						"integer": { "type": "boolean", "default": true }
 					},
+					"additionalProperties": false,
 					"required": ["type"]
 				}
 			]
@@ -65,6 +67,7 @@
 					"properties": {
 						"type": { "const": "boolean" }
 					},
+					"additionalProperties": false,
 					"required": ["type"]
 				}
 			]
@@ -86,6 +89,7 @@
 							]
 						}
 					},
+					"additionalProperties": false,
 					"required": ["type", "items"]
 				}
 			]
@@ -110,6 +114,7 @@
 							}
 						}
 					},
+					"additionalProperties": false,
 					"required": ["type", "properties"]
 				}
 			]
