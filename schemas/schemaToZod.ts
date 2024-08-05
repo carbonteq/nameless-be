@@ -16,6 +16,13 @@ const stringSchema = z
 	.merge(sharedBetweenAll);
 type StringSchema = z.infer<typeof stringSchema>;
 
+const integerSchema = z.object({
+	type: z.literal("integer"),
+	minLength: z.number().min(0).optional(),
+	maxLength: z.number().min(0).optional(),
+	integer: z.boolean().optional().default(true),
+});
+
 const booleanSchema = z
 	.object({
 		type: z.literal("boolean"),
@@ -23,14 +30,32 @@ const booleanSchema = z
 	.merge(sharedBetweenAll);
 type BooleanSchema = z.infer<typeof booleanSchema>;
 
+const arraySchema = z.object({
+	type: z.literal("array"),
+	items: z.array(
+		z.union([
+			stringSchema,
+			booleanSchema,
+			z.lazy(() => objectSchema),
+			z.lazy(() => arraySchema),
+		]),
+	),
+});
+
 const objectSchema = z
 	.object({
 		type: z.literal("object"),
 		properties: z.record(
-			z.union([stringSchema, booleanSchema, z.lazy(() => objectSchema)]),
+			z.union([
+				stringSchema,
+				booleanSchema,
+				z.lazy(() => objectSchema),
+				z.lazy(() => arraySchema),
+			]),
 		),
 	})
 	.merge(sharedBetweenAll);
+
 type ObjectSchema = {
 	type: "object";
 	properties: Record<string, StringSchema | BooleanSchema | ObjectSchema>;
@@ -43,8 +68,12 @@ const zodSchemaValidator = z.object({
 });
 
 type ColumnValType = StringSchema | BooleanSchema | ObjectSchema;
+type ZodSchemas = z.ZodBoolean | z.ZodString;
+type AddOptional<T extends z.ZodTypeAny> = T | z.ZodOptional<T>;
 
-const valueParserGenerator = (subSchema: ColumnValType) => {
+type ParserGeneratorRet = AddOptional<ZodSchemas>;
+
+const valueParserGenerator = (subSchema: ColumnValType): ParserGeneratorRet => {
 	if (subSchema.type === "string") {
 		let s = z.string();
 
@@ -60,15 +89,15 @@ const valueParserGenerator = (subSchema: ColumnValType) => {
 		return subSchema.optional ? s.optional() : s;
 	}
 
-	// if (subSchema.type === "object") {
-	// 	const shape: Record<string, ReturnType<typeof valueParserGenerator>> = {};
-	//
-	// 	for (const [name, sub] of Object.entries(subSchema.properties)) {
-	// 		shape[name] = valueParserGenerator(sub);
-	// 	}
-	//
-	// 	return z.object(shape);
-	// }
+	if (subSchema.type === "object") {
+		const shape: Record<string, ParserGeneratorRet> = {};
+
+		for (const [name, sub] of Object.entries(subSchema.properties)) {
+			shape[name] = valueParserGenerator(sub);
+		}
+
+		return z.object(shape);
+	}
 
 	throw new Error("undefined type");
 };
