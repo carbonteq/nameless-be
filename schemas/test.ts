@@ -1,5 +1,4 @@
 import { toZodSchema } from "./schemaToZod";
-import schema from "./test-schema.json";
 import goodData from "./test-data-good";
 import badData from "./test-data-bad";
 import Ajv from "ajv";
@@ -14,8 +13,13 @@ const validator = metaValidator.compile(metaSchema);
 
 validator(testSchema);
 
-// Create zod schema based on json schema
+const main = async () => {
+	const schema = toZodSchema(testSchema);
 
-// should fail on bad data
+	schema.parse(goodData);
 
-// should pass with good data
+	const badDataRes = schema.safeParse(badData);
+	console.debug("Bad data result:", badDataRes.success);
+};
+
+main();

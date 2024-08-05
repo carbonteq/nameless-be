@@ -1,19 +1,8 @@
 {
-	"$schema": "./schemas/metaSchema.json",
+	"$schema": "./metaSchema.json",
 	"columns": {
 		"name": { "type": "string" },
-		"age": { "type": "number", "min": 10, "max": 65 },
-		"subToNewsletter": { "type": "boolean" },
-		"address": {
-			"type": "object",
-			"properties": {
-				"city": { "type": "string" },
-				"zipcode": {
-					"type": "string",
-					"regex": "^\\d{5}$"
-				}
-			}
-		},
-		"someNumbers": { "type": "array", "items": { "type": "number" } }
+		"age": { "type": "number", "min": 10, "max": 65, "integer": true },
+		"subToNewsletter": { "type": "boolean" }
 	}
 }
