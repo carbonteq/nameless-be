@@ -3,6 +3,7 @@ import z from "zod";
 const sharedBetweenAll = z
 	.object({
 		optional: z.boolean().default(false),
+		nullable: z.boolean().default(false),
 	})
 	.partial();
 
@@ -75,15 +76,28 @@ const zodSchemaValidator = z.object({
 
 type ColumnValType = StringSchema | BooleanSchema | NumberSchema;
 type ZodSchemas = z.ZodBoolean | z.ZodString | z.ZodNumber;
-// | z.ZodEffects<z.ZodString, string, string>;
-type AddOptional<T extends z.ZodTypeAny> = z.ZodOptional<T>;
-type AddDefault<T extends z.ZodTypeAny> = z.ZodDefault<T>;
+// // | z.ZodEffects<z.ZodString, string, string>;
+// type AddOptional<T extends z.ZodTypeAny> = z.ZodOptional<T>;
+// type AddNullable<T extends z.ZodTypeAny> = z.ZodNullable<T>;
+// type AddDefault<T extends z.ZodTypeAny> = z.ZodDefault<T>;
 
-type ParserGeneratorRet =
-	| ZodSchemas
-	| AddOptional<ZodSchemas>
-	| AddDefault<ZodSchemas>
-	| AddOptional<AddDefault<ZodSchemas>>;
+// type ParserGeneratorRet =
+// 	| ZodSchemas
+// 	| AddOptional<ZodSchemas>
+// 	| AddNullable<ZodSchemas>
+// 	| AddDefault<ZodSchemas>
+// 	| AddOptional<AddNullable<ZodSchemas>>
+// 	| AddOptional<AddDefault<ZodSchemas>>;
+
+const commonHandler = (s: ZodSchemas, subSchema: ColumnValType) => {
+	let final: z.ZodTypeAny = s;
+
+	if (subSchema.optional) final = final.optional();
+	if (subSchema.default) final = final.default(subSchema.default);
+	if (subSchema.nullable) final = final.nullable();
+
+	return final;
+};
 
 const stringHandler = (subSchema: StringSchema) => {
 	let s = z.string();
@@ -95,17 +109,12 @@ const stringHandler = (subSchema: StringSchema) => {
 		if (subSchema.format === "email") s = s.email();
 		if (subSchema.format === "uuid") s = s.uuid();
 	}
-	if (subSchema.default) {
-		return s.default(subSchema.default);
-	}
 
 	return s;
 };
 
 const booleanHandler = (subSchema: BooleanSchema) => {
 	const s = z.boolean();
-
-	if (subSchema.default) return s.default(subSchema.default);
 
 	return s;
 };
@@ -117,26 +126,24 @@ const numberHandler = (subSchema: NumberSchema) => {
 	if (subSchema.max) s = s.max(subSchema.max);
 	if (subSchema.integer) s = s.int();
 
-	if (subSchema.default) return s.default(subSchema.default);
-
 	return s;
 };
 
-const valueParserGenerator = (subSchema: ColumnValType): ParserGeneratorRet => {
+const valueParserGenerator = (subSchema: ColumnValType) => {
 	if (subSchema.type === "string") {
 		const s = stringHandler(subSchema);
 
-		return subSchema.optional ? s.optional() : s;
+		return commonHandler(s, subSchema);
 	}
 
 	if (subSchema.type === "boolean") {
 		const s = booleanHandler(subSchema);
-		return subSchema.optional ? s.optional() : s;
+		return commonHandler(s, subSchema);
 	}
 
 	if (subSchema.type === "number") {
 		const s = numberHandler(subSchema);
-		return subSchema.optional ? s.optional() : s;
+		return commonHandler(s, subSchema);
 	}
 
 	throw new Error("undefined type");
@@ -145,7 +152,7 @@ const valueParserGenerator = (subSchema: ColumnValType): ParserGeneratorRet => {
 export const toZodSchema = <T extends Record<string, unknown>>(schema: T) => {
 	const schemaParsed = zodSchemaValidator.safeParse(schema);
 
-	const shape: Record<string, ParserGeneratorRet> = {};
+	const shape: Record<string, z.ZodTypeAny> = {};
 
 	if (!schemaParsed.success) throw schemaParsed.error;
 

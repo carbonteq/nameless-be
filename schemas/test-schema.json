@@ -1,14 +1,13 @@
 {
 	"$schema": "./metaSchema.json",
 	"columns": {
-		"name": { "type": "string" },
+		"name": { "type": "string", "nullable": true },
 		"age": {
 			"type": "number",
 			"min": 10,
 			"max": 65,
-			"integer": true,
-			"default": 158
+			"integer": true
 		},
-		"subToNewsletter": { "type": "boolean" }
+		"subToNewsletter": { "type": "boolean", "default": true }
 	}
 }

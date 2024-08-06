@@ -23,7 +23,10 @@
 	"definitions": {
 		"baseSchema": {
 			"type": "object",
-			"properties": { "optional": { "type": "boolean" } }
+			"properties": {
+				"optional": { "type": "boolean" },
+				"nullable": { "type": "boolean" }
+			}
 		},
 		"stringSchema": {
 			"allOf": [{ "$ref": "#/definitions/baseSchema" }],
