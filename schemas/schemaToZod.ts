@@ -72,37 +72,28 @@ const zodSchemaValidator = z.object({
 
 type ColumnValType = StringSchema | BooleanSchema | NumberSchema;
 type ZodSchemas = z.ZodBoolean | z.ZodString | z.ZodNumber;
+// | z.ZodEffects<z.ZodString, string, string>;
 type AddOptional<T extends z.ZodTypeAny> = T | z.ZodOptional<T>;
 
 type ParserGeneratorRet = AddOptional<ZodSchemas>;
 
+const stringHandler = (subSchema: StringSchema) => {
+	let s = z.string();
+
+	if (subSchema.minLength) s = s.min(subSchema.minLength);
+	if (subSchema.maxLength) s = s.max(subSchema.maxLength);
+	if (subSchema.regex) s = s.regex(new RegExp(subSchema.regex));
+	if (subSchema.format) {
+		if (subSchema.format === "email") s = s.email();
+		if (subSchema.format === "uuid") s = s.uuid();
+	}
+
+	return s;
+};
+
 const valueParserGenerator = (subSchema: ColumnValType): ParserGeneratorRet => {
 	if (subSchema.type === "string") {
-		let s = z.string();
-
-		if (subSchema.minLength) s = s.min(subSchema.minLength);
-		if (subSchema.maxLength) s = s.max(subSchema.maxLength);
-		if (subSchema.regex) s = s.regex(new RegExp(subSchema.regex));
-		if (subSchema.format)
-			s = s.refine(
-				//error in s
-				(val) => {
-					if (subSchema.format === "email") {
-						const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-						return emailRegex.test(val);
-					}
-					if (subSchema.format === "uuid") {
-						const uuidRegex =
-							/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-						return uuidRegex.test(val);
-					}
-					return true;
-				},
-				{
-					message: `Invalid ${subSchema.format}`,
-				},
-			);
-
+		const s = stringHandler(subSchema);
 		return subSchema.optional ? s.optional() : s;
 	}
 
