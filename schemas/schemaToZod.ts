@@ -1,3 +1,4 @@
+import { substring } from "drizzle-orm/pg-core/expressions";
 import z from "zod";
 
 const sharedBetweenAll = z
@@ -13,6 +14,7 @@ const stringSchema = z
 		maxLength: z.number().min(0).optional(),
 		regex: z.string().optional(),
 		format: z.enum(["email", "uuid"]).optional(),
+		default: z.string().optional(),
 	})
 	.merge(sharedBetweenAll);
 type StringSchema = z.infer<typeof stringSchema>;
@@ -23,6 +25,7 @@ const numberSchema = z
 		min: z.number().min(0).optional(),
 		max: z.number().min(0).optional(),
 		integer: z.boolean().optional().default(true),
+		default: z.number().optional(),
 	})
 	.merge(sharedBetweenAll);
 type NumberSchema = (typeof numberSchema)["_output"];
@@ -30,6 +33,7 @@ type NumberSchema = (typeof numberSchema)["_output"];
 const booleanSchema = z
 	.object({
 		type: z.literal("boolean"),
+		default: z.boolean().optional(),
 	})
 	.merge(sharedBetweenAll);
 type BooleanSchema = z.infer<typeof booleanSchema>;
@@ -73,9 +77,14 @@ const zodSchemaValidator = z.object({
 type ColumnValType = StringSchema | BooleanSchema | NumberSchema;
 type ZodSchemas = z.ZodBoolean | z.ZodString | z.ZodNumber;
 // | z.ZodEffects<z.ZodString, string, string>;
-type AddOptional<T extends z.ZodTypeAny> = T | z.ZodOptional<T>;
+type AddOptional<T extends z.ZodTypeAny> = z.ZodOptional<T>;
+type AddDefault<T extends z.ZodTypeAny> = z.ZodDefault<T>;
 
-type ParserGeneratorRet = AddOptional<ZodSchemas>;
+type ParserGeneratorRet =
+	| ZodSchemas
+	| AddOptional<ZodSchemas>
+	| AddDefault<ZodSchemas>
+	| AddOptional<AddDefault<ZodSchemas>>;
 
 const stringHandler = (subSchema: StringSchema) => {
 	let s = z.string();
@@ -87,6 +96,29 @@ const stringHandler = (subSchema: StringSchema) => {
 		if (subSchema.format === "email") s = s.email();
 		if (subSchema.format === "uuid") s = s.uuid();
 	}
+	if (subSchema.default) {
+		return s.default(subSchema.default);
+	}
+
+	return s;
+};
+
+const booleanHandler = (subSchema: BooleanSchema) => {
+	const s = z.boolean();
+
+	if (subSchema.default) return s.default(subSchema.default);
+
+	return s;
+};
+
+const numberHandler = (subSchema: NumberSchema) => {
+	let s = z.number();
+
+	if (subSchema.min) s = s.min(subSchema.min);
+	if (subSchema.max) s = s.max(subSchema.max);
+	if (subSchema.integer) s = s.int();
+
+	if (subSchema.default) return s.default(subSchema.default);
 
 	return s;
 };
@@ -94,21 +126,17 @@ const stringHandler = (subSchema: StringSchema) => {
 const valueParserGenerator = (subSchema: ColumnValType): ParserGeneratorRet => {
 	if (subSchema.type === "string") {
 		const s = stringHandler(subSchema);
+
 		return subSchema.optional ? s.optional() : s;
 	}
 
 	if (subSchema.type === "boolean") {
-		const s = z.boolean();
+		const s = booleanHandler(subSchema);
 		return subSchema.optional ? s.optional() : s;
 	}
 
 	if (subSchema.type === "number") {
-		let s = z.number();
-
-		if (subSchema.min) s = s.min(subSchema.min);
-		if (subSchema.max) s = s.max(subSchema.max);
-		if (subSchema.integer) s = s.int();
-
+		const s = numberHandler(subSchema);
 		return subSchema.optional ? s.optional() : s;
 	}
 

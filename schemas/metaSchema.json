@@ -26,49 +26,41 @@
 			"properties": { "optional": { "type": "boolean" } }
 		},
 		"stringSchema": {
-			"allOf": [
-				{ "$ref": "#/definitions/baseSchema" },
-				{
-					"type": "object",
-					"properties": {
-						"type": { "const": "string" },
-						"minLength": { "type": "number", "minimum": 0 },
-						"maxLength": { "type": "number", "minimum": 0 },
-						"regex": { "type": "string" }
-					},
-					"additionalProperties": false,
-					"required": ["type"]
-				}
-			]
+			"allOf": [{ "$ref": "#/definitions/baseSchema" }],
+			"type": "object",
+			"properties": {
+				"type": { "const": "string" },
+				"minLength": { "type": "number", "minimum": 0 },
+				"maxLength": { "type": "number", "minimum": 0 },
+				"regex": { "type": "string" },
+				"format": { "enum": ["uuid", "email"] },
+				"default": { "type": "string" }
+			},
+			"additionalProperties": true,
+			"required": ["type"]
 		},
 		"numberSchema": {
-			"allOf": [
-				{ "$ref": "#/definitions/baseSchema" },
-				{
-					"type": "object",
-					"properties": {
-						"type": { "const": "number" },
-						"min": { "type": "number" },
-						"max": { "type": "number" },
-						"integer": { "type": "boolean", "default": true }
-					},
-					"additionalProperties": false,
-					"required": ["type"]
-				}
-			]
+			"type": "object",
+			"allOf": [{ "$ref": "#/definitions/baseSchema" }],
+			"properties": {
+				"type": { "const": "number" },
+				"min": { "type": "number" },
+				"max": { "type": "number" },
+				"integer": { "type": "boolean", "default": true },
+				"default": { "type": "number" }
+			},
+			"additionalProperties": true,
+			"required": ["type"]
 		},
 		"booleanSchema": {
-			"allOf": [
-				{ "$ref": "#/definitions/baseSchema" },
-				{
-					"type": "object",
-					"properties": {
-						"type": { "const": "boolean" }
-					},
-					"additionalProperties": false,
-					"required": ["type"]
-				}
-			]
+			"type": "object",
+			"allOf": [{ "$ref": "#/definitions/baseSchema" }],
+			"properties": {
+				"type": { "const": "boolean" },
+				"default": { "type": "boolean" }
+			},
+			"additionalProperties": true,
+			"required": ["type"]
 		},
 		"arraySchema": {
 			"allOf": [
