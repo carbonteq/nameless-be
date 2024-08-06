@@ -36,7 +36,7 @@
 				"minLength": { "type": "number", "minimum": 0 },
 				"maxLength": { "type": "number", "minimum": 0 },
 				"regex": { "type": "string" },
-				"format": { "enum": ["uuid", "email"] },
+				"format": { "enum": ["uuid", "email", "url"] },
 				"default": { "type": "string" }
 			},
 			"additionalProperties": true,

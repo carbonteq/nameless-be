@@ -13,7 +13,7 @@ const stringSchema = z
 		minLength: z.number().min(0).optional(),
 		maxLength: z.number().min(0).optional(),
 		regex: z.string().optional(),
-		format: z.enum(["email", "uuid"]).optional(),
+		format: z.enum(["email", "uuid", "url"]).optional(),
 		default: z.string().optional(),
 	})
 	.merge(sharedBetweenAll);
@@ -108,6 +108,7 @@ const stringHandler = (subSchema: StringSchema) => {
 	if (subSchema.format) {
 		if (subSchema.format === "email") s = s.email();
 		if (subSchema.format === "uuid") s = s.uuid();
+		if (subSchema.format === "url") s = s.url();
 	}
 
 	return s;
@@ -138,11 +139,13 @@ const valueParserGenerator = (subSchema: ColumnValType) => {
 
 	if (subSchema.type === "boolean") {
 		const s = booleanHandler(subSchema);
+
 		return commonHandler(s, subSchema);
 	}
 
 	if (subSchema.type === "number") {
 		const s = numberHandler(subSchema);
+
 		return commonHandler(s, subSchema);
 	}
 
