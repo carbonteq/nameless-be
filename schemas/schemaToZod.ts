@@ -83,6 +83,25 @@ const valueParserGenerator = (subSchema: ColumnValType): ParserGeneratorRet => {
 		if (subSchema.minLength) s = s.min(subSchema.minLength);
 		if (subSchema.maxLength) s = s.max(subSchema.maxLength);
 		if (subSchema.regex) s = s.regex(new RegExp(subSchema.regex));
+		if (subSchema.format)
+			s = s.refine(
+				//error in s
+				(val) => {
+					if (subSchema.format === "email") {
+						const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+						return emailRegex.test(val);
+					}
+					if (subSchema.format === "uuid") {
+						const uuidRegex =
+							/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+						return uuidRegex.test(val);
+					}
+					return true;
+				},
+				{
+					message: `Invalid ${subSchema.format}`,
+				},
+			);
 
 		return subSchema.optional ? s.optional() : s;
 	}
