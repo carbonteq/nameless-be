@@ -8,6 +8,7 @@
 			"max": 65,
 			"integer": true
 		},
-		"subToNewsletter": { "type": "boolean", "default": true }
+		"subToNewsletter": { "type": "boolean", "default": true },
+		"someUrl": { "type": "string", "format": "url", "optional": true }
 	}
 }
