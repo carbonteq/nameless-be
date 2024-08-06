@@ -37,6 +37,10 @@ export default {
 						minLength: { type: "number", minimum: 0 },
 						maxLength: { type: "number", minimum: 0 },
 						regex: { type: "string" },
+						format: {
+							type: "string",
+							enum: ["email", "uuid"],
+						},
 					},
 					additionalProperties: false,
 					required: ["type"],

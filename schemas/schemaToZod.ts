@@ -12,6 +12,7 @@ const stringSchema = z
 		minLength: z.number().min(0).optional(),
 		maxLength: z.number().min(0).optional(),
 		regex: z.string().optional(),
+		format: z.enum(["email", "uuid"]).optional(),
 	})
 	.merge(sharedBetweenAll);
 type StringSchema = z.infer<typeof stringSchema>;
