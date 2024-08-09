@@ -17,7 +17,3 @@ export const verifyReqTbl = pgTable("verify_requests", {
 		.notNull(),
 	active: boolean("active").notNull(),
 });
-
-export const verifyReqTblRels = relations(verifyReqTbl, ({ one }) => ({
-	user: one(userTbl),
-}));

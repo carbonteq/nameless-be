@@ -16,7 +16,3 @@ export const resetReqTbl = pgTable("reset_requests", {
 		.notNull(),
 	active: boolean("active").notNull(),
 });
-
-export const resetReqTblRels = relations(resetReqTbl, ({ one }) => ({
-	user: one(userTbl),
-}));

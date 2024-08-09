@@ -35,7 +35,8 @@
 		"db:mig": "dotenv -- drizzle-kit migrate",
 		"db:check": "drizzle-kit check",
 		"db:std": "drizzle-kit studio",
-		"db:seed": "node -r tsconfig-paths/register -r @swc-node/register ./src/infra/db/drizzle/seed.ts"
+		"db:seed": "node -r tsconfig-paths/register -r @swc-node/register ./src/infra/db/drizzle/seed.ts",
+		"db:reset": "node -r tsconfig-paths/register -r @swc-node/register ./src/infra/db/drizzle/reset.ts"
 	},
 	"dependencies": {
 		"@carbonteq/fp": "^0.6.0",

@@ -29,6 +29,13 @@
 			"when": 1721733011454,
 			"tag": "0003_add_verify_request",
 			"breakpoints": true
+		},
+		{
+			"idx": 4,
+			"version": "7",
+			"when": 1723215514414,
+			"tag": "0004_add_validation_schema_tbl",
+			"breakpoints": true
 		}
 	]
 }

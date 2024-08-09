@@ -1,5 +1,4 @@
 import fastifyMultipart from "@fastify/multipart";
-import config from "@infra/config";
 import { PinoAppLogger } from "@infra/logger/pino.logger";
 import type { INestApplication } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";

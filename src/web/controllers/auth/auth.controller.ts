@@ -10,7 +10,7 @@ import { Body, Controller, HttpCode, Post, Put } from "@nestjs/common";
 import { Public } from "@web/utils/decorators/public.decorator";
 
 @Public()
-@Controller("api/auth")
+@Controller("/api/auth")
 export class AuthController {
 	constructor(private readonly wfs: AuthWorkflows) {}
 

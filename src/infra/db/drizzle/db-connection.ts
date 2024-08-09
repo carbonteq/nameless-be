@@ -2,7 +2,7 @@ import config from "@infra/config";
 import { NodePgDatabase, drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 
-import { Inject, Provider, Scope, applyDecorators } from "@nestjs/common";
+import { Inject, Provider, Scope } from "@nestjs/common";
 import dbSchema from "./models";
 
 export const DRIZZLE_DB = Symbol.for("DRIZZLE");

@@ -5,6 +5,7 @@ import { AuthController } from "./controllers/auth/auth.controller";
 import { FileController } from "./controllers/file.controller";
 import { HealthController } from "./controllers/health.controller";
 import { UserController } from "./controllers/user/user.controller";
+import { SchemaController } from "./controllers/validation/validation.controller";
 import { AuthGuard } from "./utils/guards/auth.guard";
 
 @Module({
@@ -20,6 +21,7 @@ import { AuthGuard } from "./utils/guards/auth.guard";
 		AuthController,
 		UserController,
 		FileController,
+		SchemaController,
 	],
 })
 export class WebModule {

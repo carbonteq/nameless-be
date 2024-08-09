@@ -1,4 +1,3 @@
-import { ForgotPasswordDto } from "@app/dtos/auth.dto";
 import { Controller, Post } from "@nestjs/common";
 import {
 	MultipartFastify,

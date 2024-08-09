@@ -10,12 +10,12 @@ import z from "zod";
 export class LoginDto extends BaseDto {
 	private static readonly schema = z.object({
 		email: Email,
-		password: Password,
+		password: z.string(),
 	});
 
 	private constructor(
 		readonly email: Email,
-		readonly password: Password,
+		readonly password: string,
 	) {
 		super();
 	}
