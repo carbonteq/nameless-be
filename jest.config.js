@@ -1,4 +1,4 @@
-/ https:/ / jestjs.io / docs / configuration;
+// https:/ / jestjs.io / docs / configuration;
 
 /** @type {require('@jest/types').Config.InitialOptions} */
 const config = {

@@ -10,4 +10,14 @@ export default [
 		age: "887",
 		someUrl: 8787,
 	},
+	{
+		name: "Sophia",
+		age: 99,
+		subToNewsletter: false,
+	},
+	//imposter
+	{
+		name: " ",
+		age: "",
+	},
 ];

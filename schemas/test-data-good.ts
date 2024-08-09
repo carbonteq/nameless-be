@@ -5,23 +5,12 @@ export default [
 		subToNewsletter: true,
 		email: "john@example.com",
 	},
-	{
-		name: "Jane",
-		age: 99,
-		subToNewsletter: false,
-	},
+
 	{
 		name: "Alex",
 		age: 28,
 		subToNewsletter: true,
 	},
-
-	//imposter
-	{
-		name: " ",
-		age: "",
-	},
-
 	{
 		name: "Taylor",
 		age: 22,

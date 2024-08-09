@@ -1,0 +1,6 @@
+{
+	"$schema": "https://poku.io/schemas/configs.json",
+	"include": "./schemas/__test__",
+	"filter": ".test.|.spec.",
+	"platform": "node"
+}
