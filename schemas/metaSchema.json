@@ -76,9 +76,7 @@
 							"oneOf": [
 								{ "$ref": "#/definitions/stringSchema" },
 								{ "$ref": "#/definitions/numberSchema" },
-								{ "$ref": "#/definitions/booleanSchema" },
-								{ "$ref": "#/definitions/arraySchema" },
-								{ "$ref": "#/definitions/objectSchema" }
+								{ "$ref": "#/definitions/booleanSchema" }
 							]
 						}
 					},
@@ -100,9 +98,7 @@
 								"oneOf": [
 									{ "$ref": "#/definitions/stringSchema" },
 									{ "$ref": "#/definitions/numberSchema" },
-									{ "$ref": "#/definitions/booleanSchema" },
-									{ "$ref": "#/definitions/arraySchema" },
-									{ "$ref": "#/definitions/objectSchema" }
+									{ "$ref": "#/definitions/booleanSchema" }
 								]
 							}
 						}

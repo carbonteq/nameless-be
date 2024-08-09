@@ -1,20 +1,51 @@
 export default [
 	{
-		name: "abc",
-		age: 11,
+		name: "John",
+		age: 25,
+		subToNewsletter: true,
+		email: "john@example.com",
+	},
+	{
+		name: "Jane",
+		age: 99,
+		subToNewsletter: false,
+	},
+	{
+		name: "Alex",
+		age: 28,
 		subToNewsletter: true,
 	},
+
+	//imposter
 	{
-		name: "abc",
-		age: 11,
+		name: " ",
+		age: "",
+	},
+
+	{
+		name: "Taylor",
+		age: 22,
+		subToNewsletter: false,
+		website: "https://taylor.dev",
+	},
+
+	{
+		name: "Morgan",
+		age: 29,
+		subToNewsletter: true,
+		email: "morgan@example.com",
+		website: "https://morgan.dev",
 	},
 	{
-		name: null,
-		age: 11,
+		name: "Casey",
+		age: 32,
+		subToNewsletter: false,
+		website: "https://casey.dev",
 	},
 	{
-		name: null,
-		age: 12,
-		someUrl: "https://abc.dev",
+		name: "Avery",
+		age: 45,
+		subToNewsletter: false,
+		phone: "333-444-5555",
 	},
 ];
