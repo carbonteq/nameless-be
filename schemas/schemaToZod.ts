@@ -153,14 +153,19 @@ const valueParserGenerator = (subSchema: ColumnValType) => {
 };
 
 export const toZodSchema = <T extends Record<string, unknown>>(schema: T) => {
+	//console.log("Test Schema:", schema);
 	const schemaParsed = zodSchemaValidator.safeParse(schema);
+
+	//const schemaParsed = zodSchemaValidator.safeParse(schema);
 
 	const shape: Record<string, z.ZodTypeAny> = {};
 
-	if (!schemaParsed.success) throw schemaParsed.error;
-
+	if (!schemaParsed.success) {
+		//console.error(schemaParsed.error); //error checkkk :(
+		throw schemaParsed.error;
+	}
 	const columns: Record<string, ColumnValType> = schemaParsed.data.columns;
-
+	//console.log(columns); //error chck again :(
 	for (const [name, subSchema] of Object.entries(columns)) {
 		const subZodSchema = valueParserGenerator(subSchema);
 		shape[name] = subZodSchema;

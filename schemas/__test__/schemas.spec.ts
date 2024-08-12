@@ -1,9 +1,12 @@
+import { toZodSchema } from "../schemaToZod";
 import Ajv from "ajv";
 import metaSchema from "../metaSchema.json";
-import { describe, assert, it, test } from "poku";
-import { toZodSchema } from "../schemaToZod";
 import goodData from "../test-data-good";
 import badData from "../test-data-bad";
+import { describe, assert, it } from "poku";
+
+const metaValidator = new Ajv({ strict: true });
+const validateSchema = metaValidator.compile(metaSchema, true);
 
 const testSchema = {
 	$schema: "../metaSchema.json",
@@ -20,32 +23,45 @@ const testSchema = {
 	},
 };
 
-const metaValidator = new Ajv({ strict: true });
-const validateSchema = metaValidator.compile(metaSchema, true);
 const schema = toZodSchema(testSchema);
 
-test("test schema is valid", () => {
+// Test Schema Validity
+describe("Schema Validation", { icon: "🔬", background: "brightMagenta" });
+
+it("Validates test schema against meta-schema", () => {
 	assert(validateSchema(testSchema), "Test schema is valid");
 });
 
-describe("Good Data", { background: "blue" });
-describe("Good Data", () => {
-	it("passes", () => {
+describe("Data Validation", () => {
+	it("Validates good data", () => {
 		for (const datum of goodData) {
 			const validationRes = schema.safeParse(datum);
-
 			assert(validationRes.success, validationRes.error?.message);
 		}
 	});
-});
 
-describe("Bad Data", { background: "red" });
-describe("Bad Data", () => {
-	it("fails", () => {
+	it("Validates bad data", () => {
 		for (const datum of badData) {
 			const validationRes = schema.safeParse(datum);
-
-			assert(!validationRes.success, `${JSON.stringify(datum)} should fail`);
+			assert(!validationRes.success, `${JSON.stringify(datum)} is failed`);
 		}
+	});
+
+	it("Validates empty schema", () => {
+		const emptySchema = {};
+		const emptyZodSchema = toZodSchema(emptySchema);
+		const validationRes = emptyZodSchema.safeParse({});
+		assert(!validationRes.success, "Empty schema faild validation");
+	});
+
+	it("Validates missing required fields", () => {
+		const missingFieldsData = {
+			age: 25,
+		};
+		const validationRes = schema.safeParse(missingFieldsData);
+		assert(
+			!validationRes.success,
+			"Missing fields data should faild validation",
+		);
 	});
 });
