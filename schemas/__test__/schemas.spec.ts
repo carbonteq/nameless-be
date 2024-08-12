@@ -56,10 +56,10 @@ describe("Data Validation", () => {
 	// })
 
 	it("Validates empty schema", () => {
-		const emptySchema = {};
+		const emptySchema = { columns: {} };
 		const emptyZodSchema = toZodSchema(emptySchema);
 		const validationRes = emptyZodSchema.safeParse({});
-		assert(!validationRes.success, "Empty schema failed validation");
+		assert(validationRes.success, "Empty schema validation failed ");
 	});
 
 	it("Validates missing required fields", () => {
@@ -69,7 +69,32 @@ describe("Data Validation", () => {
 		const validationRes = schema.safeParse(missingFieldsData);
 		assert(
 			!validationRes.success,
-			"Missing fields data should failed validation",
+			"Missing fields data should fail validation",
 		);
 	});
 });
+
+describe("handles default", () => {
+	const defaultName = "Joe";
+	const schema = toZodSchema({
+		columns: { name: { type: "string", default: defaultName } },
+	});
+
+	it("uses actual provided value", () => {
+		const valProvided = "Some Other Name";
+
+		const parseRes = schema.parse({ name: valProvided });
+		assert.equal(parseRes.name, valProvided);
+	});
+
+	it("uses default value if nothing provided", () => {
+		const parseRes = schema.parse({});
+		assert.equal(parseRes.name, defaultName);
+	});
+});
+
+describe("handles optional", () => {});
+
+describe("handles string formats", () => {});
+
+describe("handles nullable", () => {});

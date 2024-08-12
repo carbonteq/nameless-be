@@ -37,4 +37,10 @@ export default [
 		subToNewsletter: false,
 		phone: "333-444-5555",
 	},
+	{
+		name: null,
+		age: 45,
+		subToNewsletter: false,
+		phone: "333-444-5555",
+	},
 ];

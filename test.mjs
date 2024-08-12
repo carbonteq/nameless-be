@@ -1,11 +1,33 @@
-import Ajv from "ajv";
-import metaSchema from "./schemas/metaSchema.json" with { type: "json" };
-import testSchema from "./schematest.json" with { type: "json" };
+import z from "zod";
+import { parseJSON } from "date-fns/parseJSON";
 
-const ajv = new Ajv({ strict: true });
+const schema = z
+	.union([z.number(), z.string(), z.date()])
+	.transform((data, ctx) => {
+		if (data instanceof Date) return data;
 
-const validateSchemaDef = ajv.compile(metaSchema, true);
+		if (data instanceof Number) return new Date(data);
 
-const isValid = validateSchemaDef(testSchema);
+		console.debug("here");
 
-console.debug("Schema definition is valid:", isValid);
+		const d = parseJSON(data);
+
+		if (Number.isNaN(d.getTime())) {
+			ctx.addIssue({
+				code: "custom",
+				message: "Invalid date string",
+				params: data,
+			});
+			return z.NEVER;
+		}
+
+		return d;
+	});
+
+const actualSchema = z.object({
+	dt: schema,
+});
+
+// console.debug(actualSchema.parse({ dt: "123456" }));
+const obj = { b: undefined };
+console.debug(obj.a);
