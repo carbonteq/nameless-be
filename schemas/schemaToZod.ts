@@ -148,7 +148,7 @@ const valueParserGenerator = (subSchema: ColumnValType) => {
 
 		return commonHandler(s, subSchema);
 	}
-
+	// error check :(
 	throw new Error("undefined type");
 };
 

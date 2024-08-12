@@ -26,7 +26,7 @@ const testSchema = {
 const schema = toZodSchema(testSchema);
 
 // Test Schema Validity
-describe("Schema Validation", { icon: "🔬", background: "brightMagenta" });
+describe("Schema Validation", { icon: "🔬", background: "yellow" });
 
 it("Validates test schema against meta-schema", () => {
 	assert(validateSchema(testSchema), "Test schema is valid");
@@ -36,22 +36,30 @@ describe("Data Validation", () => {
 	it("Validates good data", () => {
 		for (const datum of goodData) {
 			const validationRes = schema.safeParse(datum);
-			assert(validationRes.success, validationRes.error?.message);
+
+			assert(validationRes.success, `${JSON.stringify(datum)} should pass`);
 		}
 	});
 
 	it("Validates bad data", () => {
 		for (const datum of badData) {
 			const validationRes = schema.safeParse(datum);
-			assert(!validationRes.success, `${JSON.stringify(datum)} is failed`);
+			assert(!validationRes.success, `${JSON.stringify(datum)} should fail`);
 		}
 	});
+
+	// it("Validates  bad data", () => {
+	// 	for(const datum of badData)
+	// 	{
+	// 		const
+	// 	}
+	// })
 
 	it("Validates empty schema", () => {
 		const emptySchema = {};
 		const emptyZodSchema = toZodSchema(emptySchema);
 		const validationRes = emptyZodSchema.safeParse({});
-		assert(!validationRes.success, "Empty schema faild validation");
+		assert(!validationRes.success, "Empty schema failed validation");
 	});
 
 	it("Validates missing required fields", () => {
@@ -61,7 +69,7 @@ describe("Data Validation", () => {
 		const validationRes = schema.safeParse(missingFieldsData);
 		assert(
 			!validationRes.success,
-			"Missing fields data should faild validation",
+			"Missing fields data should failed validation",
 		);
 	});
 });

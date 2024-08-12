@@ -28,6 +28,7 @@ export const createApp = (): Promise<NestFastifyApplication> => {
 	});
 	return app;
 };
+
 export const configureApp = (app: INestApplication) => {
 	app.useGlobalInterceptors(
 		new ResponseInterceptor(PinoAppLogger.createLogger()),
