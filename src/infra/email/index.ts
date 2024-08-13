@@ -1,22 +1,22 @@
-import { EmailPayload, EmailService } from "@app/services/email.service";
-import { Injectable, Provider } from "@nestjs/common";
-import { Resend } from "resend";
-import { templates } from "./email-templates";
+import { EmailPayload, EmailService } from "@app/services/email.service"
+import { Injectable, Provider } from "@nestjs/common"
+import { Resend } from "resend"
+import { templates } from "./email-templates"
 
 @Injectable()
 class ConsoleEmailService extends EmailService {
-	async send<T extends Record<string, unknown>>(
-		payload: EmailPayload<T>,
-	): Promise<void> {
-		console.debug(
-			"Sending email to",
-			payload.to,
-			"with subject",
-			payload.subject,
-			"and template vars",
-			payload.templateVars,
-		);
-	}
+  async send<T extends Record<string, unknown>>(
+    payload: EmailPayload<T>,
+  ): Promise<void> {
+    console.debug(
+      "Sending email to",
+      payload.to,
+      "with subject",
+      payload.subject,
+      "and template vars",
+      payload.templateVars,
+    )
+  }
 }
 
 // @Injectable()
@@ -44,6 +44,6 @@ class ConsoleEmailService extends EmailService {
 // }
 
 export const EmailServProvider: Provider<EmailService> = {
-	provide: EmailService,
-	useClass: ConsoleEmailService,
-};
+  provide: EmailService,
+  useClass: ConsoleEmailService,
+}

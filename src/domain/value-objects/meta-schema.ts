@@ -1,118 +1,118 @@
 export default {
-	$schema: "http://json-schema.org/draft-07/schema#",
-	$id: "https://github.com/carbonteq/nameless-be/blob/main/schemas/metaSchema.json",
-	title: "Nameless DSL",
-	description: "Some description",
-	type: "object",
-	properties: {
-		name: {
-			type: "string",
-			description: "Name of the schema",
-			minLength: 3,
-		},
-		columns: {
-			description: "List of columns with constraints",
-			type: "object",
-			required: [],
-			additionalProperties: {
-				oneOf: [
-					{ $ref: "#/definitions/stringSchema" },
+  $schema: "http://json-schema.org/draft-07/schema#",
+  $id: "https://github.com/carbonteq/nameless-be/blob/main/schemas/metaSchema.json",
+  title: "Nameless DSL",
+  description: "Some description",
+  type: "object",
+  properties: {
+    name: {
+      type: "string",
+      description: "Name of the schema",
+      minLength: 3,
+    },
+    columns: {
+      description: "List of columns with constraints",
+      type: "object",
+      required: [],
+      additionalProperties: {
+        oneOf: [
+          { $ref: "#/definitions/stringSchema" },
 
-					{ $ref: "#/definitions/numberSchema" },
-					{ $ref: "#/definitions/booleanSchema" },
-				],
-			},
-		},
-	},
-	additionalProperties: true,
-	required: ["columns", "name"],
-	definitions: {
-		baseSchema: {
-			type: "object",
-			properties: {
-				optional: { type: "boolean" },
-				nullable: { type: "boolean" },
-			},
-		},
-		stringSchema: {
-			allOf: [{ $ref: "#/definitions/baseSchema" }],
-			type: "object",
-			properties: {
-				type: { const: "string" },
-				minLength: { type: "number", minimum: 0 },
-				maxLength: { type: "number", minimum: 0 },
-				regex: { type: "string" },
-				format: { enum: ["uuid", "email", "url"] },
-				default: { type: "string" },
-			},
-			additionalProperties: true,
-			required: ["type"],
-		},
-		numberSchema: {
-			type: "object",
-			allOf: [{ $ref: "#/definitions/baseSchema" }],
-			properties: {
-				type: { const: "number" },
-				min: { type: "number" },
-				max: { type: "number" },
-				integer: { type: "boolean", default: false },
-				default: { type: "number" },
-			},
-			additionalProperties: true,
-			required: ["type"],
-		},
-		booleanSchema: {
-			type: "object",
-			allOf: [{ $ref: "#/definitions/baseSchema" }],
-			properties: {
-				type: { const: "boolean" },
-				default: { type: "boolean" },
-			},
-			additionalProperties: true,
-			required: ["type"],
-		},
-		arraySchema: {
-			allOf: [
-				{ $ref: "#/definitions/baseSchema" },
-				{
-					type: "object",
-					properties: {
-						type: { const: "array" },
-						items: {
-							oneOf: [
-								{ $ref: "#/definitions/stringSchema" },
-								{ $ref: "#/definitions/numberSchema" },
-								{ $ref: "#/definitions/booleanSchema" },
-							],
-						},
-					},
-					additionalProperties: false,
-					required: ["type", "items"],
-				},
-			],
-		},
-		objectSchema: {
-			allOf: [
-				{ $ref: "#/definitions/baseSchema" },
-				{
-					type: "object",
-					properties: {
-						type: { const: "object" },
-						properties: {
-							type: "object",
-							additionalProperties: {
-								oneOf: [
-									{ $ref: "#/definitions/stringSchema" },
-									{ $ref: "#/definitions/numberSchema" },
-									{ $ref: "#/definitions/booleanSchema" },
-								],
-							},
-						},
-					},
-					additionalProperties: false,
-					required: ["type", "properties"],
-				},
-			],
-		},
-	},
-} as const;
+          { $ref: "#/definitions/numberSchema" },
+          { $ref: "#/definitions/booleanSchema" },
+        ],
+      },
+    },
+  },
+  additionalProperties: true,
+  required: ["columns", "name"],
+  definitions: {
+    baseSchema: {
+      type: "object",
+      properties: {
+        optional: { type: "boolean" },
+        nullable: { type: "boolean" },
+      },
+    },
+    stringSchema: {
+      allOf: [{ $ref: "#/definitions/baseSchema" }],
+      type: "object",
+      properties: {
+        type: { const: "string" },
+        minLength: { type: "number", minimum: 0 },
+        maxLength: { type: "number", minimum: 0 },
+        regex: { type: "string" },
+        format: { enum: ["uuid", "email", "url"] },
+        default: { type: "string" },
+      },
+      additionalProperties: true,
+      required: ["type"],
+    },
+    numberSchema: {
+      type: "object",
+      allOf: [{ $ref: "#/definitions/baseSchema" }],
+      properties: {
+        type: { const: "number" },
+        min: { type: "number" },
+        max: { type: "number" },
+        integer: { type: "boolean", default: false },
+        default: { type: "number" },
+      },
+      additionalProperties: true,
+      required: ["type"],
+    },
+    booleanSchema: {
+      type: "object",
+      allOf: [{ $ref: "#/definitions/baseSchema" }],
+      properties: {
+        type: { const: "boolean" },
+        default: { type: "boolean" },
+      },
+      additionalProperties: true,
+      required: ["type"],
+    },
+    arraySchema: {
+      allOf: [
+        { $ref: "#/definitions/baseSchema" },
+        {
+          type: "object",
+          properties: {
+            type: { const: "array" },
+            items: {
+              oneOf: [
+                { $ref: "#/definitions/stringSchema" },
+                { $ref: "#/definitions/numberSchema" },
+                { $ref: "#/definitions/booleanSchema" },
+              ],
+            },
+          },
+          additionalProperties: false,
+          required: ["type", "items"],
+        },
+      ],
+    },
+    objectSchema: {
+      allOf: [
+        { $ref: "#/definitions/baseSchema" },
+        {
+          type: "object",
+          properties: {
+            type: { const: "object" },
+            properties: {
+              type: "object",
+              additionalProperties: {
+                oneOf: [
+                  { $ref: "#/definitions/stringSchema" },
+                  { $ref: "#/definitions/numberSchema" },
+                  { $ref: "#/definitions/booleanSchema" },
+                ],
+              },
+            },
+          },
+          additionalProperties: false,
+          required: ["type", "properties"],
+        },
+      ],
+    },
+  },
+} as const
