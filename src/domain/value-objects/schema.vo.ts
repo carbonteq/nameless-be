@@ -1,43 +1,48 @@
-import { Result } from "@carbonteq/fp";
-import { BaseValueObject, ValidationError } from "@carbonteq/hexapp";
-import Ajv, { ValidateFunction } from "ajv";
-import metaSchema from "./meta-schema";
+import { Result } from "@carbonteq/fp"
+import { BaseValueObject, ValidationError } from "@carbonteq/hexapp"
+import Ajv, { ValidateFunction } from "ajv"
+import metaSchema from "./meta-schema"
 
-const metaValidator = new Ajv({ strict: true });
-const schemaValidator: ValidateFunction<{ columns: Record<string, unknown> }> =
-	metaValidator.compile(metaSchema, true);
-
-export class InvalidSchema extends ValidationError {
-	constructor(
-		readonly schemaObj: unknown,
-		reasons: string[],
-	) {
-		super(`Invalid schema: <${JSON.stringify(schemaObj)}> - ${reasons}`);
-	}
+export interface SchemaProps {
+  name: string
+  columns: Record<string, unknown>
 }
 
-export class SchemaVo extends BaseValueObject<Record<string, unknown>> {
-	private constructor(readonly val: Record<string, unknown>) {
-		super();
-	}
+const metaValidator = new Ajv({ strict: true })
+const schemaValidator: ValidateFunction<SchemaProps> = metaValidator.compile(
+  metaSchema,
+  true,
+)
 
-	static create(schemaObj: unknown): Result<SchemaVo, InvalidSchema> {
-		const isValidSchema = schemaValidator(schemaObj);
+export class InvalidSchema extends ValidationError {
+  constructor(
+    readonly schemaObj: unknown,
+    reasons: string[],
+  ) {
+    super(`Invalid schema: <${JSON.stringify(schemaObj)}> - ${reasons}`)
+  }
+}
 
-		if (isValidSchema) return Result.Ok(new SchemaVo(schemaObj));
+export class SchemaVo extends BaseValueObject<SchemaProps> {
+  private constructor(readonly val: SchemaProps) {
+    super()
+  }
 
-		const reasons = (schemaValidator.errors || []).map(
-			(err) => err.message || "",
-		);
+  static create(schemaObj: unknown): Result<SchemaVo, InvalidSchema> {
+    const isValidSchema = schemaValidator(schemaObj)
 
-		return Result.Err(new InvalidSchema(schemaObj, reasons));
-	}
+    if (isValidSchema) return Result.Ok(new SchemaVo(schemaObj))
 
-	static fromSerialized(schema: Record<string, unknown>): SchemaVo {
-		return new SchemaVo(schema);
-	}
+    const reasons = (schemaValidator.errors || []).map(err => err.message || "")
 
-	serialize(): Record<string, unknown> {
-		return this.val;
-	}
+    return Result.Err(new InvalidSchema(schemaObj, reasons))
+  }
+
+  static fromSerialized(schema: SchemaProps): SchemaVo {
+    return new SchemaVo(schema)
+  }
+
+  serialize(): SchemaProps {
+    return this.val
+  }
 }

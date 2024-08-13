@@ -1,18 +1,23 @@
-import { BaseDto } from "@carbonteq/hexapp";
-import z from "zod";
+import { Option } from "@carbonteq/fp"
+import { BaseDto, UUID } from "@carbonteq/hexapp"
+import z from "zod"
+
+const schemaSchema = z.object({
+  schema: z.record(z.unknown()),
+  dataStoreId: UUID.nullable().transform(Option.fromNullable),
+})
 
 export class SubmitSchemaDto extends BaseDto {
-	private static readonly schema = z.object({
-		schema: z.record(z.unknown()),
-	});
+  private constructor(
+    readonly schemaObj: Record<string, unknown>,
+    readonly dataStoreId: Option<UUID>,
+  ) {
+    super()
+  }
 
-	private constructor(readonly schemaObj: Record<string, unknown>) {
-		super();
-	}
-
-	static create(data: unknown) {
-		return BaseDto.validate(SubmitSchemaDto.schema, data).map(
-			({ schema }) => new SubmitSchemaDto(schema),
-		);
-	}
+  static create(data: unknown) {
+    return BaseDto.validate(schemaSchema, data).map(
+      ({ schema, dataStoreId }) => new SubmitSchemaDto(schema, dataStoreId),
+    )
+  }
 }

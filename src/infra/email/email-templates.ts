@@ -1,5 +1,5 @@
 export const templates = {
-	forgetPassword: (templateVars: Record<string, unknown>) => `
+  forgetPassword: (templateVars: Record<string, unknown>) => `
       <html>
         <body>
           <p>Reset your password by clicking the link below:</p>
@@ -7,7 +7,7 @@ export const templates = {
         </body>
       </html>
     `,
-	verification: (templateVars: Record<string, unknown>) => `
+  verification: (templateVars: Record<string, unknown>) => `
       <html>
         <body>
           <p>Please verify your email address by clicking the link below:</p>
@@ -15,11 +15,11 @@ export const templates = {
         </body>
       </html>
     `,
-	default: () => `
+  default: () => `
     <html>
         <body>
           <p>Default Email Template</p>
         </body>
       </html>`,
-	// Add more templates here
-};
+  // Add more templates here
+}

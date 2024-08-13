@@ -1,19 +1,19 @@
-import type { Multipart, MultipartFile } from "@fastify/multipart";
+import type { Multipart, MultipartFile } from "@fastify/multipart"
 export type AppFileDetails = Pick<
-	MultipartFile,
-	"mimetype" | "encoding" | "filename"
+  MultipartFile,
+  "mimetype" | "encoding" | "filename"
 > & {
-	buff: Buffer;
-};
+  buff: Buffer
+}
 
 export const extractFileDetails = async (
-	file: MultipartFile,
+  file: MultipartFile,
 ): Promise<AppFileDetails> => {
-	const buff = await file.toBuffer();
-	return {
-		filename: file.filename,
-		mimetype: file.mimetype,
-		encoding: file.encoding,
-		buff,
-	};
-};
+  const buff = await file.toBuffer()
+  return {
+    filename: file.filename,
+    mimetype: file.mimetype,
+    encoding: file.encoding,
+    buff,
+  }
+}
