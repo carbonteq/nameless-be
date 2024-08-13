@@ -26,7 +26,7 @@ const testSchema = {
 const schema = toZodSchema(testSchema);
 
 // Test Schema Validity
-describe("Schema Validation", { icon: "🔬", background: "yellow" });
+describe("Schema Validation", { icon: "☠️  🤖", background: "yellow" });
 
 it("Validates test schema against meta-schema", () => {
 	assert(validateSchema(testSchema), "Test schema is valid");
@@ -47,13 +47,6 @@ describe("Data Validation", () => {
 			assert(!validationRes.success, `${JSON.stringify(datum)} should fail`);
 		}
 	});
-
-	// it("Validates  bad data", () => {
-	// 	for(const datum of badData)
-	// 	{
-	// 		const
-	// 	}
-	// })
 
 	it("Validates empty schema", () => {
 		const emptySchema = { columns: {} };
