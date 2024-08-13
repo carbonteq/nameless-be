@@ -72,6 +72,8 @@ const zodSchemaValidator = z.object({
 	columns: z.record(
 		z.discriminatedUnion("type", [stringSchema, booleanSchema, numberSchema]),
 	),
+	name: z.string().min(3),
+	dataStoreId: z.string().uuid().optional(),
 });
 
 type ColumnValType = StringSchema | BooleanSchema | NumberSchema;
@@ -114,7 +116,7 @@ const stringHandler = (subSchema: StringSchema) => {
 	return s;
 };
 
-const booleanHandler = (subSchema: BooleanSchema) => {
+const booleanHandler = (_subSchema: BooleanSchema) => {
 	const s = z.boolean();
 
 	return s;
@@ -164,6 +166,7 @@ export const toZodSchema = <T extends Record<string, unknown>>(schema: T) => {
 		//console.error(schemaParsed.error); //error checkkk :(
 		throw schemaParsed.error;
 	}
+
 	const columns: Record<string, ColumnValType> = schemaParsed.data.columns;
 	//console.log(columns); //error chck again :(
 	for (const [name, subSchema] of Object.entries(columns)) {
