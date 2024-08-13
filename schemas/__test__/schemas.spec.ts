@@ -93,8 +93,71 @@ describe("handles default", () => {
 	});
 });
 
-describe("handles optional", () => {});
+// describe("handles optional", () => {});
 
-describe("handles string formats", () => {});
+// describe("handles string formats", () => {});
 
-describe("handles nullable", () => {});
+// describe("handles nullable", () => {});
+
+describe("handles optional", () => {
+	const schema = toZodSchema({
+		columns: { name: { type: "string", optional: true } },
+	});
+
+	it("does not throw error if value is not provided", () => {
+		const parseRes = schema.parse({});
+		assert.strictEqual(parseRes.name, undefined);
+	});
+
+	it("parses provided value correctly", () => {
+		const valProvided = "Optional Name";
+
+		const parseRes = schema.parse({ name: valProvided });
+		assert.strictEqual(parseRes.name, valProvided);
+	});
+});
+
+describe("handles string formats", () => {
+	const schema = toZodSchema({
+		columns: { email: { type: "string", format: "email" } },
+	});
+
+	it("parses valid email format correctly", () => {
+		const email = "test@example.com";
+
+		const parseRes = schema.parse({ email });
+		assert.equal(parseRes.email, email);
+	});
+
+	it("throws an error for invalid email format", () => {
+		const invalidEmail = "io89uryue";
+
+		assert.throws(() => schema.parse({ email: invalidEmail }));
+	});
+});
+
+describe("handles nullable", () => {
+	const schema = toZodSchema({
+		columns: { name: { type: "string", nullable: true } },
+	});
+
+	it("parses null value correctly", () => {
+		const parseRes = schema.parse({ name: null });
+		assert.strictEqual(parseRes.name, null);
+	});
+
+	it("parses provided value correctly", () => {
+		const valProvided = "Nullable Name";
+
+		const parseRes = schema.parse({ name: valProvided });
+		assert.equal(parseRes.name, valProvided);
+	});
+
+	it("throws an error if nullable is not allowed but null is provided", () => {
+		const nonNullableSchema = toZodSchema({
+			columns: { name: { type: "string", nullable: false } },
+		});
+
+		assert.throws(() => nonNullableSchema.parse({ name: null }));
+	});
+});
