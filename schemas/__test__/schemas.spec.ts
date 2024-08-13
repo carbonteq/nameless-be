@@ -93,12 +93,6 @@ describe("handles default", () => {
 	});
 });
 
-// describe("handles optional", () => {});
-
-// describe("handles string formats", () => {});
-
-// describe("handles nullable", () => {});
-
 describe("handles optional", () => {
 	const schema = toZodSchema({
 		columns: { name: { type: "string", optional: true } },
@@ -147,7 +141,7 @@ describe("handles nullable", () => {
 	});
 
 	it("parses provided value correctly", () => {
-		const valProvided = "Nullable Name";
+		const valProvided = "any weird name";
 
 		const parseRes = schema.parse({ name: valProvided });
 		assert.equal(parseRes.name, valProvided);
@@ -160,4 +154,11 @@ describe("handles nullable", () => {
 
 		assert.throws(() => nonNullableSchema.parse({ name: null }));
 	});
+
+	// it("check only", () => {
+	// 	const valProvided = null;
+
+	// 	const parseRes = schema.parse({ name: valProvided });
+	// 	assert.equal(parseRes.name, valProvided);
+	// });
 });
