@@ -4,7 +4,7 @@ import { Controller, Post, Req } from "@nestjs/common";
 import { BodyDto } from "@web/utils/decorators/dto-wrapper";
 import { FastifyRequest } from "fastify";
 
-@Controller("/api/validation")
+@Controller("/api/schema")
 export class SchemaController {
 	constructor(private readonly wfs: SchemaWorkflows) {}
 

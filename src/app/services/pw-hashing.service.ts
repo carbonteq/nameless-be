@@ -5,7 +5,7 @@ import { Password } from "@domain/refined/user.refined";
 export abstract class PwHashingService {
 	abstract hash(plain: Password): string;
 	abstract compare(
-		plain: Password,
+		plain: string,
 		hashed: string,
 	): UnitResult<InvalidCredentials>;
 }

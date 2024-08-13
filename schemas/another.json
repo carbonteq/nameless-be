@@ -1,0 +1,16 @@
+{
+	"$schema": "./metaSchema.json",
+	"name": "asdasd",
+	"columns": {
+		"constituentId": { "type": "string", "format": "uuid" },
+		"constituentEmail": { "type": "string", "format": "email" },
+		"classYear": {
+			"type": "number",
+			"integer": true,
+			"optional": true,
+			"min": 1970,
+			"max": 2030
+		},
+		"admin": { "type": "boolean", "default": false }
+	}
+}

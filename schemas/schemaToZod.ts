@@ -24,7 +24,7 @@ const numberSchema = z
 		type: z.literal("number"),
 		min: z.number().min(0).optional(),
 		max: z.number().min(0).optional(),
-		integer: z.boolean().optional().default(true),
+		integer: z.boolean().optional().default(false),
 		default: z.number().optional(),
 	})
 	.merge(sharedBetweenAll);
@@ -73,7 +73,6 @@ const zodSchemaValidator = z.object({
 		z.discriminatedUnion("type", [stringSchema, booleanSchema, numberSchema]),
 	),
 	name: z.string().min(3),
-	dataStoreId: z.string().uuid().optional(),
 });
 
 type ColumnValType = StringSchema | BooleanSchema | NumberSchema;

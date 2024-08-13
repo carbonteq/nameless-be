@@ -15,14 +15,18 @@ export class SchemaWorkflows {
 		logger.setContext("SchemaWorkflows");
 	}
 
-	async submitValidationSchema(user: User, { schemaObj }: SubmitSchemaDto) {
+	async submitValidationSchema(
+		user: User,
+		{ schemaObj, dataStoreId }: SubmitSchemaDto,
+	) {
 		// Validate schemaObj is valid
 		const schemaRes = SchemaVo.create(schemaObj);
 		// Create schema entity and persist it (in db)
 		const schemaEntity = await schemaRes
-			.map((vo) => ValidationSchema.new(vo, user))
+			.map((vo) => ValidationSchema.new(vo, user, dataStoreId))
 			.flatMap((schema) => this.repo.insert(schema));
 		// Return some data signifying success or failure
+
 		return AppResult.fromResult(schemaEntity.map(toSerialized));
 	}
 }

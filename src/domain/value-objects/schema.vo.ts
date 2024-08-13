@@ -3,9 +3,16 @@ import { BaseValueObject, ValidationError } from "@carbonteq/hexapp";
 import Ajv, { ValidateFunction } from "ajv";
 import metaSchema from "./meta-schema";
 
+export interface SchemaProps {
+	name: string;
+	columns: Record<string, unknown>;
+}
+
 const metaValidator = new Ajv({ strict: true });
-const schemaValidator: ValidateFunction<{ columns: Record<string, unknown> }> =
-	metaValidator.compile(metaSchema, true);
+const schemaValidator: ValidateFunction<SchemaProps> = metaValidator.compile(
+	metaSchema,
+	true,
+);
 
 export class InvalidSchema extends ValidationError {
 	constructor(
@@ -16,8 +23,8 @@ export class InvalidSchema extends ValidationError {
 	}
 }
 
-export class SchemaVo extends BaseValueObject<Record<string, unknown>> {
-	private constructor(readonly val: Record<string, unknown>) {
+export class SchemaVo extends BaseValueObject<SchemaProps> {
+	private constructor(readonly val: SchemaProps) {
 		super();
 	}
 
@@ -33,11 +40,11 @@ export class SchemaVo extends BaseValueObject<Record<string, unknown>> {
 		return Result.Err(new InvalidSchema(schemaObj, reasons));
 	}
 
-	static fromSerialized(schema: Record<string, unknown>): SchemaVo {
+	static fromSerialized(schema: SchemaProps): SchemaVo {
 		return new SchemaVo(schema);
 	}
 
-	serialize(): Record<string, unknown> {
+	serialize(): SchemaProps {
 		return this.val;
 	}
 }

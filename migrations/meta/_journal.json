@@ -36,6 +36,13 @@
 			"when": 1723215514414,
 			"tag": "0004_add_validation_schema_tbl",
 			"breakpoints": true
+		},
+		{
+			"idx": 5,
+			"version": "7",
+			"when": 1723552821479,
+			"tag": "0005_add_data_store_id",
+			"breakpoints": true
 		}
 	]
 }

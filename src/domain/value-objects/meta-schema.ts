@@ -5,6 +5,11 @@ export default {
 	description: "Some description",
 	type: "object",
 	properties: {
+		name: {
+			type: "string",
+			description: "Name of the schema",
+			minLength: 3,
+		},
 		columns: {
 			description: "List of columns with constraints",
 			type: "object",
@@ -12,6 +17,7 @@ export default {
 			additionalProperties: {
 				oneOf: [
 					{ $ref: "#/definitions/stringSchema" },
+
 					{ $ref: "#/definitions/numberSchema" },
 					{ $ref: "#/definitions/booleanSchema" },
 				],
@@ -19,7 +25,7 @@ export default {
 		},
 	},
 	additionalProperties: true,
-	required: ["columns"],
+	required: ["columns", "name"],
 	definitions: {
 		baseSchema: {
 			type: "object",
@@ -49,7 +55,7 @@ export default {
 				type: { const: "number" },
 				min: { type: "number" },
 				max: { type: "number" },
-				integer: { type: "boolean", default: true },
+				integer: { type: "boolean", default: false },
 				default: { type: "number" },
 			},
 			additionalProperties: true,

@@ -4,8 +4,8 @@ import { APP_GUARD } from "@nestjs/core";
 import { AuthController } from "./controllers/auth/auth.controller";
 import { FileController } from "./controllers/file.controller";
 import { HealthController } from "./controllers/health.controller";
+import { SchemaController } from "./controllers/schema/schema.controller";
 import { UserController } from "./controllers/user/user.controller";
-import { SchemaController } from "./controllers/validation/validation.controller";
 import { AuthGuard } from "./utils/guards/auth.guard";
 
 @Module({

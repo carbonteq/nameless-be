@@ -5,6 +5,11 @@
 	"description": "Some description",
 	"type": "object",
 	"properties": {
+		"name": {
+			"type": "string",
+			"description": "",
+			"minLength": 3
+		},
 		"columns": {
 			"description": "List of columns with constraints",
 			"type": "object",
@@ -17,18 +22,6 @@
 					{ "$ref": "#/definitions/booleanSchema" }
 				]
 			}
-		},
-
-		"name": {
-			"type": "string",
-			"description": "",
-			"minLength": 3
-		},
-		"dataStoreId": {
-			"type": "string",
-			"description": "",
-			"format": "uuid",
-			"pattern": "^[a-zA-Z0-9]{8}-?[a-zA-Z0-9]{4}-?[a-zA-Z0-9]{4}-?[a-zA-Z0-9]{4}-?[a-zA-Z0-9]{12}$"
 		}
 	},
 	"additionalProperties": true,
@@ -62,7 +55,7 @@
 				"type": { "const": "number" },
 				"min": { "type": "number" },
 				"max": { "type": "number" },
-				"integer": { "type": "boolean", "default": true },
+				"integer": { "type": "boolean", "default": false },
 				"default": { "type": "number" }
 			},
 			"additionalProperties": true,

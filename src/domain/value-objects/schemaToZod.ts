@@ -24,7 +24,7 @@ const numberSchema = z
 		type: z.literal("number"),
 		min: z.number().min(0).optional(),
 		max: z.number().min(0).optional(),
-		integer: z.boolean().optional().default(true),
+		integer: z.boolean().optional().default(false),
 		default: z.number().optional(),
 	})
 	.merge(sharedBetweenAll);
@@ -72,6 +72,7 @@ const zodSchemaValidator = z.object({
 	columns: z.record(
 		z.discriminatedUnion("type", [stringSchema, booleanSchema, numberSchema]),
 	),
+	name: z.string().min(3),
 });
 
 type ColumnValType = StringSchema | BooleanSchema | NumberSchema;
@@ -114,7 +115,7 @@ const stringHandler = (subSchema: StringSchema) => {
 	return s;
 };
 
-const booleanHandler = (subSchema: BooleanSchema) => {
+const booleanHandler = (_subSchema: BooleanSchema) => {
 	const s = z.boolean();
 
 	return s;
@@ -148,7 +149,7 @@ const valueParserGenerator = (subSchema: ColumnValType) => {
 
 		return commonHandler(s, subSchema);
 	}
-
+	// error check :(
 	throw new Error("undefined type");
 };
 
@@ -157,10 +158,12 @@ export const toZodSchema = <T extends Record<string, unknown>>(schema: T) => {
 
 	const shape: Record<string, z.ZodTypeAny> = {};
 
-	if (!schemaParsed.success) throw schemaParsed.error;
+	if (!schemaParsed.success) {
+		throw schemaParsed.error;
+	}
 
 	const columns: Record<string, ColumnValType> = schemaParsed.data.columns;
-
+	//console.log(columns); //error chck again :(
 	for (const [name, subSchema] of Object.entries(columns)) {
 		const subZodSchema = valueParserGenerator(subSchema);
 		shape[name] = subZodSchema;

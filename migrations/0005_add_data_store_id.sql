@@ -1,0 +1,1 @@
+ALTER TABLE "validationSchema" ADD COLUMN "dataStoreId" uuid;
