@@ -10,5 +10,7 @@
 		},
 		"subToNewsletter": { "type": "boolean", "default": true },
 		"someUrl": { "type": "string", "format": "url", "optional": true }
-	}
+	},
+	"name": "test schema",
+	"dataStoreId": "87fd3a81-f222-43e7-ba63-67c5db5485d7"
 }

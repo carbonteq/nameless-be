@@ -1,27 +1,13 @@
 import { toZodSchema } from "../schemaToZod";
 import Ajv from "ajv";
 import metaSchema from "../metaSchema.json";
+import testSchema from "../test-schema.json";
 import goodData from "../test-data-good";
 import badData from "../test-data-bad";
 import { describe, assert, it } from "poku";
 
 const metaValidator = new Ajv({ strict: true });
 const validateSchema = metaValidator.compile(metaSchema, true);
-
-const testSchema = {
-	$schema: "../metaSchema.json",
-	columns: {
-		name: { type: "string", nullable: true },
-		age: {
-			type: "number",
-			min: 10,
-			max: 65,
-			integer: true,
-		},
-		subToNewsletter: { type: "boolean", default: true },
-		someUrl: { type: "string", format: "url", optional: true },
-	},
-};
 
 const schema = toZodSchema(testSchema);
 
@@ -48,6 +34,12 @@ describe("Data Validation", () => {
 		}
 	});
 
+	// it("Validates ", () =>{
+	// 	for(const detum of badData){
+
+	// 	}
+	// })
+
 	it("Validates empty schema", () => {
 		const emptySchema = { columns: {} };
 		const emptyZodSchema = toZodSchema(emptySchema);
@@ -67,6 +59,7 @@ describe("Data Validation", () => {
 	});
 });
 
+// Test Data Validity
 describe("handles default", () => {
 	const defaultName = "Joe";
 	const schema = toZodSchema({
@@ -148,7 +141,7 @@ describe("handles nullable", () => {
 		assert.throws(() => nonNullableSchema.parse({ name: null }));
 	});
 
-	// it("check only", () => {
+	// it("check", () => {
 	// 	const valProvided = null;
 
 	// 	const parseRes = schema.parse({ name: valProvided });

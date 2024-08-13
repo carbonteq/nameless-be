@@ -15,7 +15,6 @@ export default [
 		age: 99,
 		subToNewsletter: false,
 	},
-	//imposter
 	{
 		name: " ",
 		age: "",
