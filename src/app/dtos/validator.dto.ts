@@ -2,12 +2,12 @@ import { Option } from "@carbonteq/fp";
 import { BaseDto, UUID } from "@carbonteq/hexapp";
 import z from "zod";
 
-export class SubmitSchemaDto extends BaseDto {
-	private static readonly schema = z.object({
-		schema: z.record(z.unknown()),
-		dataStoreId: UUID.nullable().transform(Option.fromNullable),
-	});
+const schemaSchema = z.object({
+	schema: z.record(z.unknown()),
+	dataStoreId: UUID.nullable().transform(Option.fromNullable),
+});
 
+export class SubmitSchemaDto extends BaseDto {
 	private constructor(
 		readonly schemaObj: Record<string, unknown>,
 		readonly dataStoreId: Option<UUID>,
@@ -16,7 +16,7 @@ export class SubmitSchemaDto extends BaseDto {
 	}
 
 	static create(data: unknown) {
-		return BaseDto.validate(SubmitSchemaDto.schema, data).map(
+		return BaseDto.validate(schemaSchema, data).map(
 			({ schema, dataStoreId }) => new SubmitSchemaDto(schema, dataStoreId),
 		);
 	}

@@ -1,4 +1,4 @@
-import { Option } from "@carbonteq/fp";
+import { Option, Result } from "@carbonteq/fp";
 import {
 	BaseEntity,
 	type IEntity,
@@ -7,6 +7,7 @@ import {
 } from "@carbonteq/hexapp";
 import { SchemaVo } from "@domain/value-objects/schema.vo";
 import { User } from "../user/user.entity";
+import { UnauthorizedSchemaOperation } from "./validation-schema.errors";
 
 export interface IValidationSchema extends IEntity {
 	schema: SchemaVo;
@@ -53,17 +54,32 @@ export class ValidationSchema extends BaseEntity implements IValidationSchema {
 		return this.#dataStoreId;
 	}
 
-	updateSchema(newSchema: SchemaVo) {
-		this.#schema = newSchema;
+	ensureBelongsTo(user: User): Result<this, UnauthorizedSchemaOperation> {
+		if (user.id === this.belongsTo) return Result.Ok(this);
 
-		this.markUpdated();
-		return this;
+		return Result.Err(new UnauthorizedSchemaOperation(this.id, user.id));
+	}
+
+	updateSchema(
+		updatedBy: User,
+		updatedValues: SchemaVo,
+		dataStoreId: IValidationSchema["dataStoreId"],
+	) {
+		return this.ensureBelongsTo(updatedBy).map((_) => {
+			this.#schema = updatedValues;
+			this.#dataStoreId = dataStoreId;
+
+			this.markUpdated();
+
+			return this;
+		});
 	}
 
 	forUpdate() {
 		return {
 			...super.forUpdate(),
 			schema: this.#schema.serialize(),
+			dataStoreId: this.#dataStoreId,
 		};
 	}
 

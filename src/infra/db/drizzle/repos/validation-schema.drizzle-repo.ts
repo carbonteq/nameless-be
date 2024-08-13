@@ -2,13 +2,14 @@ import { Result } from "@carbonteq/fp";
 import { RepositoryResult } from "@carbonteq/hexapp";
 import { ValidationSchema } from "@domain/entities/schema/validation-schema.entity";
 import {
+	UnauthorizedSchemaOperation,
 	ValidationSchemaAlreadyExists,
 	ValidationSchemaNotFound,
 } from "@domain/entities/schema/validation-schema.errors";
 import { ValidationSchemaRepository } from "@domain/entities/schema/validation-schema.repository";
 import { User } from "@domain/entities/user/user.entity";
 import { Injectable, Provider } from "@nestjs/common";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { DrizzleDb, InjectDb } from "../db-connection";
 import { validationSchemaTbl } from "../models/validation-schema.model";
 
@@ -25,7 +26,7 @@ class ValidationSchemaDrizzleRepo extends ValidationSchemaRepository {
 
 		const updated = await this.db
 			.update(validationSchemaTbl)
-			.set(data)
+			.set({ ...data, dataStoreId: data.dataStoreId.safeUnwrap() })
 			.where(eq(validationSchemaTbl.id, entity.id))
 			.returning();
 
@@ -72,6 +73,20 @@ class ValidationSchemaDrizzleRepo extends ValidationSchemaRepository {
 		const schemas = data.map(ValidationSchema.fromSerialized);
 
 		return Result.Ok(schemas);
+	}
+
+	async delete(
+		schema: ValidationSchema,
+	): Promise<RepositoryResult<ValidationSchema, ValidationSchemaNotFound>> {
+		const data = await this.db
+			.delete(validationSchemaTbl)
+			.where(eq(validationSchemaTbl.id, schema.id))
+			.returning();
+
+		if (data.length === 0)
+			return Result.Err(new ValidationSchemaNotFound(schema.id));
+
+		return Result.Ok(ValidationSchema.fromSerialized(data[0]));
 	}
 }
 
