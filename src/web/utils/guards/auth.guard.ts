@@ -1,4 +1,5 @@
 import { AuthTokenService } from "@app/services/auth-token.service"
+import { AppError } from "@carbonteq/hexapp"
 import { UserRepository } from "@domain/entities/user/user.repository"
 import {
   CanActivate,
@@ -39,6 +40,7 @@ export class AuthGuard implements CanActivate {
     const user = await payload.bind(tokenPayload =>
       this.userRepo.fetchById(tokenPayload.userId),
     )
+    if (user.isErr()) throw AppError.fromErr(user.unwrapErr())
 
     request.user = user.unwrap()
     return true
