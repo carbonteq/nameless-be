@@ -1,4 +1,6 @@
+import { OAuthService } from "@app/services/oauth.service"
 import { AuthWorkflows } from "@app/workflows/auth.workflows"
+import { DataStoreWorkflows } from "@app/workflows/data-store.workflows"
 import { SchemaWorkflows } from "@app/workflows/schema.workflows"
 import { UserWorkflows } from "@app/workflows/user.workflow"
 import { AuthDomainService } from "@domain/services/auth.domain-service"
@@ -46,7 +48,7 @@ const DOMAIN_SERVICES = [AuthDomainService, UserDomainService]
 class DomainServicesModule {}
 
 //app servic module
-const APP_SERVICES = []
+const APP_SERVICES = [OAuthService]
 
 @Global()
 @Module({
@@ -57,7 +59,12 @@ const APP_SERVICES = []
 class AppServiceModule {}
 
 //workflow module
-const WORKFLOWS = [AuthWorkflows, UserWorkflows, SchemaWorkflows]
+const WORKFLOWS = [
+  AuthWorkflows,
+  UserWorkflows,
+  SchemaWorkflows,
+  DataStoreWorkflows,
+]
 
 @Global()
 @Module({

@@ -14,8 +14,14 @@ const ENV_LOG_LEVEL = env
   .default(LOG_LEVEL.DEBUG)
   .asEnum(Object.values(LOG_LEVEL))
 
+const BASE_URI = env
+  .get("BASE_URI")
+  .default(`http://localhost:${PORT}`)
+  .asString()
+
 export default {
   PORT,
   LOG_LEVEL: ENV_LOG_LEVEL,
   NODE_ENV: NODE_ENV_VALUE,
+  BASE_URI,
 }

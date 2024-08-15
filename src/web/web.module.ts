@@ -5,6 +5,7 @@ import { AuthController } from "./controllers/auth/auth.controller"
 import { FileController } from "./controllers/file.controller"
 import { HealthController } from "./controllers/health.controller"
 import { SchemaController } from "./controllers/schema/schema.controller"
+import { DatastoreController } from "./controllers/store/data-store.controller"
 import { UserController } from "./controllers/user/user.controller"
 import { AuthGuard } from "./utils/guards/auth.guard"
 
@@ -22,6 +23,7 @@ import { AuthGuard } from "./utils/guards/auth.guard"
     UserController,
     FileController,
     SchemaController,
+    DatastoreController,
   ],
 })
 export class WebModule {
